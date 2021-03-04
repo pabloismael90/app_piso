@@ -1,9 +1,9 @@
 import 'package:app_piso/src/models/acciones_model.dart';
 import 'package:app_piso/src/models/decisiones_model.dart';
 import 'package:app_piso/src/models/finca_model.dart';
-import 'package:app_piso/src/models/planta_model.dart';
+import 'package:app_piso/src/models/paso_model.dart';
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/pages/finca/finca_page.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/constants.dart';
@@ -76,28 +76,19 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     final formKey = new GlobalKey<FormState>();
 
-    Future<double> _countPercentPlaga(String idTest, int estacion, int idPlaga) async{
-        double countPalga = await DBProvider.db.countPlagaEstacion(idTest, estacion, idPlaga);         
+    Future<double> _countPercentPlaga(String idTest, int caminata, int idPlaga) async{
+        double countPalga = await DBProvider.db.countPisoCaminata(idTest, caminata, idPlaga);         
         return countPalga*100;
     }
     
     Future<double> _countPercentTotal(String idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.countPlagaTotal(idTest, idPlaga);         
+        double countPalga = await DBProvider.db.countPisoTotal(idTest, idPlaga);         
         return countPalga*100;
     }
 
-    // Future<double> _countPercentDeficiencia(String idTest, int estacion) async{
-    //     double countDeficiencia = await DBProvider.db.countDeficiencia(idTest, estacion);      
-    //     return countDeficiencia*100;
-    // }
 
-    // Future<double> _countPercentTotalDeficiencia(String idTest) async{
-    //     double countDeficiencia = await DBProvider.db.countTotalDeficiencia(idTest);      
-    //     return countDeficiencia*100;
-    // }
-
-    Future<double> _countPercentProduccion(String idTest, int estacion, int estado) async{
-        double countProduccion = await DBProvider.db.countProduccion(idTest, estacion, estado);
+    Future<double> _countPercentProduccion(String idTest, int caminata, int estado) async{
+        double countProduccion = await DBProvider.db.countProduccion(idTest, caminata, estado);
         return countProduccion*100;
     }
 
@@ -121,8 +112,8 @@ class _DesicionesPageState extends State<DesicionesPage> {
         Future _getdataFinca() async{
             Finca finca = await DBProvider.db.getFincaId(plagaTest.idFinca);
             Parcela parcela = await DBProvider.db.getParcelaId(plagaTest.idLote);
-            List<Planta> plantas = await DBProvider.db.getTodasPlantaIdTest(plagaTest.id);
-            return [finca, parcela, plantas];
+            List<Paso> pasos = await DBProvider.db.getTodasPasoIdTest(plagaTest.id);
+            return [finca, parcela, pasos];
         }
 
         
@@ -216,7 +207,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                             children: [
                                                                 Container(                                                                    
                                                                     child: Text(
-                                                                        "Porcentaje de plantas afectadas",
+                                                                        "Porcentaje de Pasos afectadas",
                                                                         textAlign: TextAlign.center,
                                                                         style: Theme.of(context).textTheme
                                                                             .headline5
@@ -354,7 +345,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                 Padding(
                                                     padding: EdgeInsets.only( bottom: 10.0),
                                                     child: Text(
-                                                        "N de plantas: ${parcela.numeroPlanta}",
+                                                        "N de Plantas: ${parcela.numeroPlanta}",
                                                         style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
                                                     ),
                                                 ),

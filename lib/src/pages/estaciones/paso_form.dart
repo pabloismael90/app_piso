@@ -1,6 +1,6 @@
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
 import 'package:app_piso/src/models/existePlaga_model.dart';
-import 'package:app_piso/src/models/planta_model.dart';
+import 'package:app_piso/src/models/paso_model.dart';
 
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
 import 'package:app_piso/src/providers/db_provider.dart';
@@ -23,7 +23,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     int countPlanta = 0;
     var uuid = Uuid();
 
-    Planta planta = Planta();
+    Paso paso = Paso();
     ExistePlaga existePlaga = ExistePlaga();
     List<ExistePlaga> listaPlagas = [];
 
@@ -51,8 +51,8 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
 
         List data = ModalRoute.of(context).settings.arguments;
         
-        planta.idTest = data[1];
-        planta.estacion = data[0] ;
+        paso.idTest = data[1];
+        paso.caminata = data[0] ;
         countPlanta = data[2]+1;
         
         //return Scaffold();
@@ -66,7 +66,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                         key: formKey,
                         child: Column(
                             children: <Widget>[
-                                TitulosPages(titulo: 'Planta $countPlanta estacion ${planta.estacion}'),
+                                TitulosPages(titulo: 'Planta $countPlanta caminata ${paso.caminata}'),
                                 Divider(),
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 10),
@@ -114,8 +114,6 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                                         ),
                                     ],
                                 ),
-                                
-                                _produccion(),
                                 Divider(),
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 30.0),
@@ -190,57 +188,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         
     }
 
-    Widget _produccion(){
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-                Expanded(child: Text('Producción', style:TextStyle(fontWeight: FontWeight.bold))),
-                Transform.scale(
-                    scale: 1.2,
-                    child: Radio(
-                        value: 1,
-                        groupValue: planta.produccion,
-                        onChanged: (value) {
-                            setState(() {
-                                planta.produccion = value;
-                            });
-                        },
-                        activeColor: Colors.teal[900],
-                    ),
-                ),
-                Transform.scale(
-                    scale: 1.2,
-                    child: Radio(
-                        value: 2,
-                        groupValue: planta.produccion,
-                        onChanged: (value) {
-                            setState(() {
-                                planta.produccion = value;
-                            });
-                        },
-                        activeColor: Colors.orange[900],
-                    ),
-                ),
-                Transform.scale(
-                    scale: 1.2,
-                        child: Radio(
-                        value: 3,
-                        groupValue: planta.produccion,
-                        onChanged: (value) {
-                            setState(() {
-                                planta.produccion = value;
-                            });
-                        },
-                        activeColor: Colors.red[900],
-                    ),
-                ),   
 
-            ],
-        );
-        
-    }
-
-    
 
     Widget  _botonsubmit(){
         return RaisedButton.icon(
@@ -260,14 +208,14 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     _listaPlagas(){
 
         radios.forEach((key, value) {
-            final ExistePlaga itemPlaga = ExistePlaga();
-            itemPlaga.id = uuid.v1();
-            itemPlaga.idPlanta = planta.id;
-            itemPlaga.idPlaga = int.parse(key);
-            itemPlaga.existe = int.parse(value);
+            final ExistePlaga itemPiso = ExistePlaga();
+            itemPiso.id = uuid.v1();
+            itemPiso.idPlanta = paso.id;
+            itemPiso.idPlaga = int.parse(key);
+            itemPiso.existe = int.parse(value);
 
 
-            listaPlagas.add(itemPlaga);
+            listaPlagas.add(itemPiso);
         });
         
     }
@@ -281,9 +229,6 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         });
 
 
-        if (planta.produccion == 0) {
-            variableVacias ++;
-        }
 
 
         if  ( variableVacias !=  0){
@@ -294,10 +239,10 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         setState(() {_guardando = true;});
 
         
-        if(planta.id == null){
-            planta.id =  uuid.v1();
+        if(paso.id == null){
+            paso.id =  uuid.v1();
             _listaPlagas();
-            fincasBloc.addPlata(planta, planta.idTest, planta.estacion);
+            fincasBloc.addPlata(paso, paso.idTest, paso.caminata);
 
             listaPlagas.forEach((item) {
                 DBProvider.db.nuevoExistePlagas(item);

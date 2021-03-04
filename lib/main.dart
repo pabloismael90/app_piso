@@ -1,3 +1,12 @@
+import 'package:app_piso/src/pages/PDFView.dart';
+import 'package:app_piso/src/pages/decisiones/decisiones_form.dart';
+import 'package:app_piso/src/pages/decisiones/decisiones_page.dart';
+import 'package:app_piso/src/pages/decisiones/reporte_page.dart';
+import 'package:app_piso/src/pages/estaciones/caminatas_page.dart';
+import 'package:app_piso/src/pages/estaciones/paso_form.dart';
+import 'package:app_piso/src/pages/estaciones/pasos_page.dart';
+import 'package:app_piso/src/pages/galeria/image.dart';
+import 'package:app_piso/src/pages/galeria/list_galeria.dart';
 import 'package:app_piso/src/pages/home_page.dart';
 import 'package:app_piso/src/pages/finca/finca_form.dart';
 import 'package:app_piso/src/pages/finca/finca_page.dart';
@@ -56,6 +65,18 @@ class MyApp extends StatelessWidget {
                 //test
                 'tests' :  ( BuildContext context ) => TestPage(),
                 'addTest' : ( BuildContext context ) => AgregarTest(),
+                //estaciones
+                'caminatas' : ( BuildContext context ) => CaminatasPage(),
+                'pasos' : ( BuildContext context ) => PasoPage(),
+                'addPasos' : ( BuildContext context ) => AgregarPlanta(),
+                //Decisiones
+                'decisiones' : ( BuildContext context ) => DesicionesPage(),
+                'registros' : ( BuildContext context ) => DesicionesList(),
+                'reporte' : ( BuildContext context ) => ReportePage(),
+                //Galeria de imagenes
+                'galeria' : ( BuildContext context ) => GaleriaImagenes(),
+                'viewImg' : ( BuildContext context ) => ViewImage(),
+                'PDFview' : ( BuildContext context ) => PDFView(),
                 
                 
 

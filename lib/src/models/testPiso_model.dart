@@ -9,21 +9,21 @@ class TestPiso {
         this.id,
         this.idFinca = '',
         this.idLote = '',
-        this.estaciones = 3,
+        this.caminatas = 3,
         this.fechaTest,
     });
 
     String id;
     String idFinca;
     String idLote;
-    int estaciones;
+    int caminatas;
     String fechaTest;
 
     factory TestPiso.fromJson(Map<String, dynamic> json) => TestPiso(
         id: json["id"],
         idFinca: json["idFinca"],
         idLote: json["idLote"],
-        estaciones: json["estaciones"],
+        caminatas: json["caminatas"],
         fechaTest: json["fechaTest"],
     );
 
@@ -31,7 +31,7 @@ class TestPiso {
         "id": id,
         "idFinca": idFinca,
         "idLote": idLote,
-        "estaciones": estaciones,
+        "caminatas": caminatas,
         "fechaTest": fechaTest,
     };
 }

@@ -1,5 +1,5 @@
 import 'package:app_piso/src/models/acciones_model.dart';
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/titulos.dart';
@@ -19,12 +19,11 @@ class DesicionesList extends StatelessWidget {
 
     Future getDatos(String id) async{
         
-        TestPiso testplaga= await DBProvider.db.getTestId(id);
+        TestPiso testPiso = await DBProvider.db.getTestId(id);
+        Finca finca = await DBProvider.db.getFincaId(testPiso.idFinca);
+        Parcela parcela = await DBProvider.db.getParcelaId(testPiso.idLote);
 
-        Finca finca = await DBProvider.db.getFincaId(testplaga.idFinca);
-        Parcela parcela = await DBProvider.db.getParcelaId(testplaga.idLote);
-
-        return [testplaga, finca, parcela];
+        return [testPiso, finca, parcela];
     }
 
     @override
@@ -42,7 +41,7 @@ class DesicionesList extends StatelessWidget {
                         children: [
                             TitulosPages(titulo: 'Reportes'),
                             Divider(),
-                            Expanded(child: _listaDePlagas(snapshot.data, context))
+                            Expanded(child: _listaDePiso(snapshot.data, context))
                         ],
                     );
 
@@ -51,7 +50,7 @@ class DesicionesList extends StatelessWidget {
         );
     }
 
-    Widget  _listaDePlagas(List acciones, BuildContext context){
+    Widget  _listaDePiso(List acciones, BuildContext context){
         return ListView.builder(
             itemBuilder: (context, index) {
                 return GestureDetector(
@@ -61,11 +60,11 @@ class DesicionesList extends StatelessWidget {
                             if (!snapshot.hasData) {
                                 return CircularProgressIndicator();
                             }
-                            TestPiso testplagadata = snapshot.data[0];
+                            TestPiso testPisodata = snapshot.data[0];
                             Finca fincadata = snapshot.data[1];
                             Parcela parceladata = snapshot.data[2];
 
-                            return _cardDesiciones(testplagadata,fincadata,parceladata, context);
+                            return _cardDesiciones(testPisodata,fincadata,parceladata, context);
                         },
                     ),
                     

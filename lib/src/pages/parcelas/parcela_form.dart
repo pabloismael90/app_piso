@@ -73,47 +73,57 @@ class _AgregarParcelaState extends State<AgregarParcela> {
         }
         
         String labelMedida;
-        final item = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}');
-        labelMedida  = item['label'];
+        
         
         return Scaffold(
             appBar: AppBar(),
-            body: SingleChildScrollView(
-                
-                child: Column(
-                    children: [
-                        TitulosPages(titulo: tituloForm),
-                        Divider(),
-                        Container(
-                        padding: EdgeInsets.all(15.0),
-                            child: Form(
-                                key: formKey,
-                                child: Column(
-                                    children: <Widget>[
-                                        _nombreParcela(fincaid),
-                                        SizedBox(height: 40.0,),
-                                         _areaParcela(finca,fincaid, labelMedida),
-                                        SizedBox(height: 40.0,),
-                                        Row(
-                                            children: <Widget>[
-                                                Flexible(
-                                                    child: _variedadCacao(),
-                                                ),
-                                                SizedBox(width: 20.0,),
-                                                Flexible(
-                                                    child: _numeroPlanta(labelMedida),
-                                                ),
-                                            ],
+            body: FutureBuilder(
+                    future: getparcelas(fincaid),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                            return CircularProgressIndicator();
+                        }
+
+                        finca = snapshot.data[0];
+                        List<Parcela> listParcela = snapshot.data[1];
+                        labelMedida = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}')['label'];
+                        return SingleChildScrollView(                
+                            child: Column(
+                                children: [
+                                    TitulosPages(titulo: tituloForm),
+                                    Divider(),
+                                    Container(
+                                    padding: EdgeInsets.all(15.0),
+                                        child: Form(
+                                            key: formKey,
+                                            child: Column(
+                                                children: <Widget>[
+                                                    _nombreParcela(fincaid),
+                                                    SizedBox(height: 40.0,),
+                                                    _areaParcela(finca, labelMedida, listParcela),
+                                                    SizedBox(height: 40.0,),
+                                                    Row(
+                                                        children: <Widget>[
+                                                            Flexible(
+                                                                child: _variedadCacao(),
+                                                            ),
+                                                            SizedBox(width: 20.0,),
+                                                            Flexible(
+                                                                child: _numeroPlanta(labelMedida),
+                                                            ),
+                                                        ],
+                                                    ),
+                                                    SizedBox(height: 60.0,),
+                                                    _botonsubmit(tituloBtn)
+                                                ],
+                                            ),
                                         ),
-                                        SizedBox(height: 60.0,),
-                                        _botonsubmit(tituloBtn)
-                                    ],
-                                ),
+                                    ),
+                                ],
                             ),
-                        ),
-                    ],
+                        );
+                    },
                 ),
-            ),
         );
     
     }
@@ -140,20 +150,10 @@ class _AgregarParcelaState extends State<AgregarParcela> {
         
     }
     
-    Widget _areaParcela(Finca finca, String fincaid, String labelMedida){
+    Widget _areaParcela(Finca finca, String labelMedida, List<Parcela> listParcela){
 
-        
-
-        return FutureBuilder(
-            future: getparcelas(fincaid),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
-                }
                 double sumaParcelas = 0.0;
-                double valorsuma = 0.0; 
-                finca = snapshot.data[0];
-                List<Parcela> listParcela = snapshot.data[1];
+                double valorsuma = 0.0;             
 
                 for (var item in listParcela) {
                     sumaParcelas = sumaParcelas+item.areaLote;
@@ -189,8 +189,7 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                     },
                     onSaved: (value) => parcela.areaLote = double.parse(value),
                 );
-            },
-        );
+            
 
     }
 
@@ -222,7 +221,7 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                 FilteringTextInputFormatter.digitsOnly
             ], 
             decoration: InputDecoration(
-                labelText: 'Número de plantas x $labelMedida'
+                labelText: 'No de plantas x $labelMedida'
             ),
             validator: (value) {
 
@@ -276,10 +275,10 @@ class _AgregarParcelaState extends State<AgregarParcela> {
 
         setState(() {_guardando = true;});
 
-        print(parcela.id);
-        print(parcela.idFinca);
-        print(parcela.nombreLote);
-        print(parcela.areaLote);
+        // print(parcela.id);
+        // print(parcela.idFinca);
+        // print(parcela.nombreLote);
+        // print(parcela.areaLote);
         if(parcela.id == null){
             parcela.id = uuid.v1();
             fincasBloc.addParcela(parcela, parcela.idFinca);

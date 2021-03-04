@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:app_piso/src/models/acciones_model.dart';
 import 'package:app_piso/src/models/decisiones_model.dart';
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 //import 'package:app_piso/src/pages/decisiones/pdf_view.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
@@ -46,19 +46,19 @@ class _ReportePageState extends State<ReportePage> {
         return [listDecisiones, listAcciones, finca, parcela];
     }
 
-    Future<double> _countPercentPlaga(String idTest, int estacion, int idPlaga) async{
-        double countPalga = await DBProvider.db.countPlagaEstacion(idTest, estacion, idPlaga);         
+    Future<double> _countPercentPlaga(String idTest, int caminata, int idPlaga) async{
+        double countPalga = await DBProvider.db.countPisoCaminata(idTest, caminata, idPlaga);         
         return countPalga*100;
     }
     
     Future<double> _countPercentTotal(String idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.countPlagaTotal(idTest, idPlaga);         
+        double countPalga = await DBProvider.db.countPisoTotal(idTest, idPlaga);         
         return countPalga*100;
     }
 
     
-    Future<double> _countPercentProduccion(String idTest, int estacion, int estado) async{
-        double countProduccion = await DBProvider.db.countProduccion(idTest, estacion, estado);
+    Future<double> _countPercentProduccion(String idTest, int caminata, int estado) async{
+        double countProduccion = await DBProvider.db.countProduccion(idTest, caminata, estado);
         return countProduccion*100;
     }
 
@@ -338,7 +338,7 @@ class _ReportePageState extends State<ReportePage> {
             children: [
                 Expanded(child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text('Estaciones', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
+                    child: Text('Caminatas', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
                                             .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                 ),),
                 Container(
@@ -369,7 +369,7 @@ class _ReportePageState extends State<ReportePage> {
 
     
 
-    Widget _countPlagas(String idTest, int estacion){
+    Widget _countPlagas(String idTest, int caminata){
         List<Widget> lisItem = List<Widget>();
 
         for (var i = 0; i < itemPlagas.length; i++) {
@@ -973,7 +973,7 @@ class _ReportePageState extends State<ReportePage> {
     }
 
 
-    Widget _plagasPDF(String idTest, int estacion){
+    Widget _plagasPDF(String idTest, int caminata){
         List<Widget> lisItem = List<Widget>();
 
         for (var i = 0; i < itemPlagas.length; i++) {

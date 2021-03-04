@@ -1,49 +1,47 @@
-//import 'package:app_piso/src/models/planta_model.dart';
+
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
-import 'package:app_piso/src/models/planta_model.dart';
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/paso_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/dialogDelete.dart';
 import 'package:app_piso/src/utils/widget/titulos.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_swiper/flutter_swiper.dart';
 
 // ignore: must_be_immutable
-class PlantaPage extends StatefulWidget {
+class PasoPage extends StatefulWidget {
   @override
-  _PlantaPageState createState() => _PlantaPageState();
+  _PasoPageState createState() => _PasoPageState();
 }
 
-class _PlantaPageState extends State<PlantaPage> {
+class _PasoPageState extends State<PasoPage> {
 
     final fincasBloc = new FincasBloc();
 
     @override
     Widget build(BuildContext context) {
-        List dataEstaciones = ModalRoute.of(context).settings.arguments;
-        TestPiso plaga = dataEstaciones[0];
-        int indiceEstacion = dataEstaciones[1]+1;
-        fincasBloc.obtenerPlantaIdTest(plaga.id, indiceEstacion);
+        List dataCaminatases = ModalRoute.of(context).settings.arguments;
+        TestPiso piso = dataCaminatases[0];
+        int indiceCaminata = dataCaminatases[1]+1;
+        fincasBloc.obtenerPasoIdTest(piso.id, indiceCaminata);
 
         return Scaffold(
             appBar: AppBar(),
-            body: StreamBuilder<List<Planta>>(
-                //future: DBProvider.db.getTodasPlantas(),
-                stream: fincasBloc.plantaStream,
+            body: StreamBuilder<List<Paso>>(
+                stream: fincasBloc.pasoStream,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
                         return CircularProgressIndicator();
                     }
                     //print(snapshot.data);
-                    final planta = snapshot.data;
+                    final paso = snapshot.data;
 
-                    if (planta.length == 0) {
+                    if (paso.length == 0) {
                         return Column(
                             children: [
-                                TitulosPages(titulo: 'Estacion $indiceEstacion'),
+                                TitulosPages(titulo: 'Estacion $indiceCaminata'),
                                 Divider(), 
                                 Expanded(child: Center(
-                                    child: Text('No hay datos: \nIngrese datos de plantas', 
+                                    child: Text('No hay datos: \nIngrese datos de pasos', 
                                     textAlign: TextAlign.center,
                                         style: Theme.of(context).textTheme.headline6,
                                         )
@@ -55,9 +53,9 @@ class _PlantaPageState extends State<PlantaPage> {
                     
                     return Column(
                         children: [
-                            TitulosPages(titulo: 'Estacion $indiceEstacion'),
+                            TitulosPages(titulo: 'Estacion $indiceCaminata'),
                             Divider(),                            
-                            Expanded(child: SingleChildScrollView(child: _listaDePlantas(planta, context, indiceEstacion))),
+                            Expanded(child: SingleChildScrollView(child: _listaDePisos(paso, context, indiceCaminata))),
                         ],
                     );
                 },
@@ -67,7 +65,7 @@ class _PlantaPageState extends State<PlantaPage> {
                     color: kBackgroundColor,
                     child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
-                        child: _countPlanta(plaga.id, indiceEstacion, plaga)
+                        child: _countPiso(piso.id, indiceCaminata, piso)
                     ),
                 ),
             ),
@@ -77,11 +75,11 @@ class _PlantaPageState extends State<PlantaPage> {
     
 
 
-    Widget  _listaDePlantas(List planta, BuildContext context, int numeroEstacion){
+    Widget  _listaDePisos(List paso, BuildContext context, int indiceCaminata){
 
         return ListView.builder(
             itemBuilder: (context, index) {
-                if (planta[index].estacion == numeroEstacion) {
+                if (paso[index].estacion == indiceCaminata) {
 
                     return Dismissible(
                         key: UniqueKey(),
@@ -109,7 +107,7 @@ class _PlantaPageState extends State<PlantaPage> {
                                             Padding(
                                                 padding: EdgeInsets.only(top: 10, bottom: 10.0),
                                                 child: Text(
-                                                    "Planta ${index+1}",
+                                                    "Piso ${index+1}",
                                                     overflow: TextOverflow.ellipsis,
                                                     maxLines: 2,
                                                     style: Theme.of(context).textTheme.headline6,
@@ -123,13 +121,13 @@ class _PlantaPageState extends State<PlantaPage> {
                         direction: DismissDirection.endToStart,
                         background: backgroundTrash(context),
                         movementDuration: Duration(milliseconds: 500),
-                        onDismissed: (direction) => fincasBloc.borrarPlanta(planta[index]),
+                        onDismissed: (direction) => fincasBloc.borrarPaso(paso[index]),
                     );
                 }
                 return Container();
             },
             shrinkWrap: true,
-            itemCount: planta.length,
+            itemCount: paso.length,
             padding: EdgeInsets.only(bottom: 30.0),
             controller: ScrollController(keepScrollOffset: false),
         );
@@ -138,37 +136,37 @@ class _PlantaPageState extends State<PlantaPage> {
 
     
 
-    Widget  _countPlanta(String idPlaga,  int estacion, TestPiso plaga){
-        return StreamBuilder<List<Planta>>(
-            stream: fincasBloc.plantaStream,
+    Widget  _countPiso(String idPlaga,  int caminatas, TestPiso piso){
+        return StreamBuilder<List<Paso>>(
+            stream: fincasBloc.pasoStream,
             
             builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
                     return CircularProgressIndicator();
                 }
-                List<Planta> plantas = snapshot.data;
+                List<Paso> pasos = snapshot.data;
                 
-                int value = plantas.length;
+                int value = pasos.length;
                 
-                if (value < 10) {
+                if (value < 20) {
                     return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                            Text('Plantas: $value / 10',
+                            Text('Pasos: $value / 20',
                                 style: Theme.of(context).textTheme
                                         .headline6
                                         .copyWith(fontWeight: FontWeight.w600)
                             ),
-                            _addPlanta(context, estacion, plaga, value),
+                            _addPaso(context, caminatas, piso, value),
                         ],
                     );
                 }else{
-                    if (estacion <= 2){
+                    if (caminatas <= 2){
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                                 Container(
-                                    child: Text('Plantas: $value / 10',
+                                    child: Text('Pasos: $value / 20',
                                         style: Theme.of(context).textTheme
                                                 .headline6
                                                 .copyWith(fontWeight: FontWeight.w600)
@@ -176,13 +174,13 @@ class _PlantaPageState extends State<PlantaPage> {
                                 ),
                                 RaisedButton.icon(
                                     icon:Icon(Icons.navigate_next_rounded),                               
-                                    label: Text('Siguiente estaciones',
+                                    label: Text('Siguiente caminata',
                                         style: Theme.of(context).textTheme
                                             .headline6
                                             .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
                                     ),
                                     padding:EdgeInsets.all(13),
-                                    onPressed:() => Navigator.popAndPushNamed(context, 'plantas', arguments: [plaga, estacion]),
+                                    onPressed:() => Navigator.popAndPushNamed(context, 'pasos', arguments: [piso, caminatas]),
                                 )
                             ],
                         );
@@ -191,7 +189,7 @@ class _PlantaPageState extends State<PlantaPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                                 Container(
-                                    child: Text('Plantas: $value / 10',
+                                    child: Text('Pisos : $value / 20',
                                         style: Theme.of(context).textTheme
                                                 .headline6
                                                 .copyWith(fontWeight: FontWeight.w600)
@@ -199,7 +197,7 @@ class _PlantaPageState extends State<PlantaPage> {
                                 ),
                                 RaisedButton.icon(
                                     icon:Icon(Icons.chevron_left),                               
-                                    label: Text('Lista de estaciones',
+                                    label: Text('Lista de caminatas',
                                         style: Theme.of(context).textTheme
                                             .headline6
                                             .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
@@ -218,18 +216,18 @@ class _PlantaPageState extends State<PlantaPage> {
     }
 
 
-    Widget  _addPlanta(BuildContext context,  int estacion, TestPiso plaga, int value){
+    Widget  _addPaso(BuildContext context,  int estacion, TestPiso plaga, int value){
         return RaisedButton.icon(
             
             icon:Icon(Icons.add_circle_outline_outlined),
             
-            label: Text('Agregar Planta',
+            label: Text('Agregar Paso',
                 style: Theme.of(context).textTheme
                     .headline6
                     .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
             ),
             padding:EdgeInsets.all(13),
-            onPressed:() => Navigator.pushNamed(context, 'addPlanta', arguments: [estacion,plaga.id,value]),
+            onPressed:() => Navigator.pushNamed(context, 'addPasos', arguments: [estacion,plaga.id,value]),
         );
     }
 

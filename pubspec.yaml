@@ -46,9 +46,9 @@ dependencies:
   percent_indicator: ^2.1.9+1
   #Visor img
   photo_view: ^0.10.3
-  #Crear PDF
-  #pdf: ^2.1.0
-  flutter_full_pdf_viewer: ^1.0.6
+  ##Crear PDF
+  pdf: ^2.1.0
+  pdf_flutter: ^1.1.4
   #Storage
   #ext_storage: ^1.0.3
 

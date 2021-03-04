@@ -1,5 +1,5 @@
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/dialogDelete.dart';
@@ -22,21 +22,21 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
 
     
-    Future _getdataFinca(TestPiso textPlaga) async{
-        Finca finca = await DBProvider.db.getFincaId(textPlaga.idFinca);
-        Parcela parcela = await DBProvider.db.getParcelaId(textPlaga.idLote);
+    Future _getdataFinca(TestPiso textPiso) async{
+        Finca finca = await DBProvider.db.getFincaId(textPiso.idFinca);
+        Parcela parcela = await DBProvider.db.getParcelaId(textPiso.idLote);
         return [finca, parcela];
     }
 
     @override
     Widget build(BuildContext context) {
         var size = MediaQuery.of(context).size;
-        fincasBloc.obtenerPlagas();
+        fincasBloc.obtenerPisos();
 
         return Scaffold(
                 appBar: AppBar(),
                 body: StreamBuilder<List<TestPiso>>(
-                    stream: fincasBloc.plagaStream,
+                    stream: fincasBloc.pisoStream,
 
                     
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -45,8 +45,8 @@ class _TestPageState extends State<TestPage> {
 
                         }
 
-                        List<TestPiso> textPlagas= snapshot.data;
-                        if (textPlagas.length == 0) {
+                        List<TestPiso> textPisos= snapshot.data;
+                        if (textPisos.length == 0) {
                             return Column(
                                 children: [
                                     TitulosPages(titulo: 'Parcelas'),
@@ -66,7 +66,7 @@ class _TestPageState extends State<TestPage> {
 
                                 TitulosPages(titulo: 'Parcelas'),
                                 Divider(),
-                                Expanded(child: SingleChildScrollView(child: _listaDePlagas(textPlagas, size, context)))
+                                Expanded(child: SingleChildScrollView(child: _listaDePisos(textPisos, size, context)))
                             ],
                         );
                         
@@ -100,14 +100,14 @@ class _TestPageState extends State<TestPage> {
         );
     }
 
-    Widget  _listaDePlagas(List textPlagas, Size size, BuildContext context){
+    Widget  _listaDePisos(List textPisos, Size size, BuildContext context){
         return ListView.builder(
             itemBuilder: (context, index) {
                 return Dismissible(
                     key: UniqueKey(),
                     child: GestureDetector(
                         child: FutureBuilder(
-                            future: _getdataFinca(textPlagas[index]),
+                            future: _getdataFinca(textPisos[index]),
                             builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (!snapshot.hasData) {
                                     return Center(child: CircularProgressIndicator());
@@ -115,28 +115,28 @@ class _TestPageState extends State<TestPage> {
                                 Finca finca = snapshot.data[0];
                                 Parcela parcela = snapshot.data[1];
 
-                                return _cardTest(size, textPlagas[index], finca, parcela);
+                                return _cardTest(size, textPisos[index], finca, parcela);
                             },
                         ),
-                        onTap: () => Navigator.pushNamed(context, 'estaciones', arguments: textPlagas[index]),
+                        onTap: () => Navigator.pushNamed(context, 'caminatas', arguments: textPisos[index]),
                     ),
                     confirmDismiss: (direction) => confirmacionUser(direction, context),
                     direction: DismissDirection.endToStart,
                     background: backgroundTrash(context),
                     movementDuration: Duration(milliseconds: 500),
-                    onDismissed: (direction) => fincasBloc.borrarTestPlaga(textPlagas[index].id),
+                    onDismissed: (direction) => fincasBloc.borrarTestPiso(textPisos[index].id),
                 );
                
             },
             shrinkWrap: true,
-            itemCount: textPlagas.length,
+            itemCount: textPisos.length,
             padding: EdgeInsets.only(bottom: 30.0),
             controller: ScrollController(keepScrollOffset: false),
         );
 
     }
 
-    Widget _cardTest(Size size, TestPiso textPlaga, Finca finca, Parcela parcela){
+    Widget _cardTest(Size size, TestPiso textPiso, Finca finca, Parcela parcela){
         
         return Container(
             margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -191,7 +191,7 @@ class _TestPageState extends State<TestPage> {
                                             Padding(
                                                 padding: EdgeInsets.only( bottom: 10.0),
                                                 child: Text(
-                                                    'Fecha: ${textPlaga.fechaTest}',
+                                                    'Fecha: ${textPiso.fechaTest}',
                                                     style: TextStyle(color: kLightBlackColor),
                                                 ),
                                             ),

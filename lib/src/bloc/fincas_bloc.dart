@@ -2,8 +2,8 @@
 import 'dart:async';
 
 import 'package:app_piso/src/models/decisiones_model.dart';
-import 'package:app_piso/src/models/planta_model.dart';
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/paso_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 
 class FincasBloc {
@@ -19,12 +19,12 @@ class FincasBloc {
         obtenerFincas();
         obtenerParcelas();
     }
-
+    
     final _fincasController = StreamController<List<Finca>>.broadcast();
     final _parcelasController = StreamController<List<Parcela>>.broadcast();
-    final _plagaController = StreamController<List<TestPiso>>.broadcast();
-    final _plantaController = StreamController<List<Planta>>.broadcast();
-    final _countPlantaControl = StreamController<List<Planta>>.broadcast();
+    final _pisoController = StreamController<List<TestPiso>>.broadcast();
+    final _pasoController = StreamController<List<Paso>>.broadcast();
+    final _countPasoControl = StreamController<List<Paso>>.broadcast();
     final _decisionesControl = StreamController<List<Decisiones>>.broadcast();
     
 
@@ -33,9 +33,9 @@ class FincasBloc {
 
     Stream<List<Finca>> get fincaStream => _fincasController.stream;
     Stream<List<Parcela>> get parcelaStream => _parcelasController.stream;
-    Stream<List<TestPiso>> get plagaStream => _plagaController.stream;
-    Stream<List<Planta>> get plantaStream => _plantaController.stream;
-    Stream<List<Planta>> get countPlanta => _countPlantaControl.stream;
+    Stream<List<TestPiso>> get pisoStream => _pisoController.stream;
+    Stream<List<Paso>> get pasoStream => _pasoController.stream;
+    Stream<List<Paso>> get countPaso => _countPasoControl.stream;
     Stream<List<Decisiones>> get decisionesStream => _decisionesControl.stream;
 
 
@@ -96,42 +96,42 @@ class FincasBloc {
         _parcelaSelectControl.sink.add( await DBProvider.db.getSelectParcelasIdFinca(idFinca));
     }
 
-    //Plagas
-    obtenerPlagas() async {
-        _plagaController.sink.add( await DBProvider.db.getTodasTestPlaga() );
+    //pisos
+    obtenerPisos() async {
+        _pisoController.sink.add( await DBProvider.db.getTodasTestPiso() );
     }
     
-    addPlaga( TestPiso nuevoTestPiso) async{
-        await DBProvider.db.nuevoTestPlaga(nuevoTestPiso);
-        obtenerPlagas();
+    addPiso( TestPiso nuevoTestPiso) async{
+        await DBProvider.db.nuevoTestPiso(nuevoTestPiso);
+        obtenerPisos();
         //obtenerParcelasIdFinca(idFinca);
     }
 
-    borrarTestPlaga( String idTest) async{
-        await DBProvider.db.deleteTestPlaga(idTest);
-        obtenerPlagas();
+    borrarTestPiso( String idTest) async{
+        await DBProvider.db.deleteTestPiso(idTest);
+        obtenerPisos();
     }
 
 
-    //Plantas
-    obtenerPlantas(String idTest) async {
-        _countPlantaControl.sink.add( await DBProvider.db.getTodasPlantaIdTest(idTest) );  
+    //Pasos
+    obtenerPasos(String idTest) async {
+        _countPasoControl.sink.add( await DBProvider.db.getTodasPasoIdTest(idTest) );  
     }
 
     
-    obtenerPlantaIdTest(String idTest, int estacion) async {
-        _plantaController.sink.add( await DBProvider.db.getTodasPlantasIdTest(idTest, estacion));
+    obtenerPasoIdTest(String idTest, int estacion) async {
+        _pasoController.sink.add( await DBProvider.db.getTodasPasosIdTest(idTest, estacion));
     }
     
-    addPlata( Planta nuevaPlanta, String idTest, int estacion) async{
-        await DBProvider.db.nuevoPlanta(nuevaPlanta);
-        obtenerPlantaIdTest(idTest, estacion);
-        obtenerPlantas(idTest);
+    addPlata( Paso nuevaPaso, String idTest, int estacion) async{
+        await DBProvider.db.nuevoPaso(nuevaPaso);
+        obtenerPasoIdTest(idTest, estacion);
+        obtenerPasos(idTest);
     }
 
-    borrarPlanta( Planta planta) async{
-        await DBProvider.db.deletePlanta(planta.id);
-        obtenerPlantaIdTest(planta.idTest, planta.estacion);
+    borrarPaso( Paso paso) async{
+        await DBProvider.db.deletePaso(paso.id);
+        obtenerPasoIdTest(paso.idTest, paso.caminata);
     }
 
 
@@ -150,9 +150,9 @@ class FincasBloc {
         _parcelasController?.close();
         _fincasSelectControl?.close();
         _parcelaSelectControl?.close();
-        _plagaController?.close();
-        _plantaController?.close();
-        _countPlantaControl?.close();
+        _pisoController?.close();
+        _pasoController?.close();
+        _countPasoControl?.close();
         _decisionesControl?.close();
     }
 

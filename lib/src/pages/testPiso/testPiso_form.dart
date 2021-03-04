@@ -1,6 +1,6 @@
 //import 'dart:html';
 
-import 'package:app_piso/src/models/testplaga_model.dart';
+import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/utils/widget/titulos.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class _AgregarTestState extends State<AgregarTest> {
 
 
 
-    TestPiso plaga = new TestPiso();
+    TestPiso piso = new TestPiso();
     final fincasBloc = new FincasBloc();
 
     bool _guardando = false;
@@ -35,7 +35,7 @@ class _AgregarTestState extends State<AgregarTest> {
     String _fecha = '';
     TextEditingController _inputfecha = new TextEditingController();
 
-    List<TestPiso> mainlistplagas ;
+    List<TestPiso> mainlistpisos ;
 
     List mainparcela;
     TextEditingController _control;
@@ -151,7 +151,7 @@ class _AgregarTestState extends State<AgregarTest> {
             onChanged: (val){
                 fincasBloc.selectParcela(val);
             },
-            onSaved: (value) => plaga.idFinca = value,
+            onSaved: (value) => piso.idFinca = value,
         );
     }
 
@@ -185,7 +185,7 @@ class _AgregarTestState extends State<AgregarTest> {
                     },
 
                     //onChanged: (val) => print(val),
-                    onSaved: (value) => plaga.idLote = value,
+                    onSaved: (value) => piso.idLote = value,
                 );
             },
         );
@@ -209,7 +209,7 @@ class _AgregarTestState extends State<AgregarTest> {
             //onChanged: (value) => print('hola: $value'),
             //validator: (value){},
             onSaved: (value){
-                plaga.fechaTest = value;
+                piso.fechaTest = value;
             }
         );
     }
@@ -237,14 +237,14 @@ class _AgregarTestState extends State<AgregarTest> {
 
 
     Widget  _botonsubmit(){
-        fincasBloc.obtenerPlagas();
+        fincasBloc.obtenerPisos();
         return StreamBuilder(
-            stream: fincasBloc.plagaStream ,
+            stream: fincasBloc.pisoStream ,
             builder: (BuildContext context, AsyncSnapshot snapshot){
                 if (!snapshot.hasData) {
                     return Container();
                 }
-                mainlistplagas = snapshot.data;
+                mainlistpisos = snapshot.data;
 
                 return RaisedButton.icon(
                     icon:Icon(Icons.save, color: Colors.white,),
@@ -271,7 +271,7 @@ class _AgregarTestState extends State<AgregarTest> {
     void _submit(){
         bool checkRepetido = false;
 
-        plaga.estaciones = 3;
+        piso.caminatas = 3;
 
         if  ( !formKey.currentState.validate() ){
             //Cuendo el form no es valido
@@ -279,10 +279,10 @@ class _AgregarTestState extends State<AgregarTest> {
         }
         formKey.currentState.save();
 
-        mainlistplagas.forEach((e) {
-            //print(plaga.fechaTest);
+        mainlistpisos.forEach((e) {
+            //print(piso.fechaTest);
             //print(e.fechaTest);
-            if (plaga.idFinca == e.idFinca && plaga.idLote == e.idLote && plaga.fechaTest == e.fechaTest) {
+            if (piso.idFinca == e.idFinca && piso.idLote == e.idLote && piso.fechaTest == e.fechaTest) {
                 checkRepetido = true;
             }
         });
@@ -294,7 +294,7 @@ class _AgregarTestState extends State<AgregarTest> {
             return null;
         }
 
-        String checkParcela = mainparcela.firstWhere((e) => e['value'] == '${plaga.idLote}', orElse: () => {"value": "1","label": "No data"})['value'];
+        String checkParcela = mainparcela.firstWhere((e) => e['value'] == '${piso.idLote}', orElse: () => {"value": "1","label": "No data"})['value'];
 
 
 
@@ -307,14 +307,9 @@ class _AgregarTestState extends State<AgregarTest> {
 
         setState(() {_guardando = true;});
 
-        // print(plaga.id);
-        // print(plaga.idFinca);
-        // print(plaga.idLote);
-        // print(plaga.estaciones);
-        // print(plaga.fechaTest);
-        if(plaga.id == null){
-            plaga.id =  uuid.v1();
-            fincasBloc.addPlaga(plaga);
+        if(piso.id == null){
+            piso.id =  uuid.v1();
+            fincasBloc.addPiso(piso);
         }
 
         setState(() {_guardando = false;});
