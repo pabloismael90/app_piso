@@ -105,50 +105,55 @@ List<Map<String, dynamic>> variedadCacao(){
     return variedadesCacao;
 }
 
-List<Map<String, dynamic>> plagasCacao(){
+List<Map<String, dynamic>> itemContacto(){
     final List<Map<String, dynamic>>  plagasCacao = [
-            {
-                'value': '0', 
-                'label': 'Monilia'
-            },
-            {
-                'value': '1', 
-                'label': 'Mazorca negra'
-            },
-            {
-                'value': '2', 
-                'label': 'Mal de machete'
-            },
-            {
-                'value': '3', 
-                'label': 'Ardilla/Rata'
-            },
-            {
-                'value': '4', 
-                'label': 'Barrenador'
-            },
-            {
-                'value': '5', 
-                'label': 'Chupadores'
-            },
-            {
-                'value': '6', 
-                'label': 'Zompopos'
-            },
-            {
-                'value': '7', 
-                'label': 'Bejuco'
-            },
-            {
-                'value': '8', 
-                'label': 'Tanda'
-            },
-            {
-                'value': '9', 
-                'label': 'Deficiencia'
-            },
+            
+        {
+        'value' : '0',
+        'label' : 'Zacate anual',
+        },
+        {
+        'value' : '1',
+        'label' : 'Zacate perene ',
+        },
+        {
+        'value' : '2',
+        'label' : 'Hoja ancha anual',
+        },
+        {
+        'value' : '3',
+        'label' : 'Hoja ancha perenne',
+        },
+        {
+        'value' : '4',
+        'label' : 'Ciperácea o Coyolillo',
+        },
+        {
+        'value' : '5',
+        'label' : 'Bejucos en suelo ',
+        },
+        {
+        'value' : '6',
+        'label' : 'Cobertura hoja ancha',
+        },
+        {
+        'value' : '7',
+        'label' : 'Cobertura hoja angosta',
+        },
+        {
+        'value' : '8',
+        'label' : 'Hojarasca ',
+        },
+        {
+        'value' : '9',
+        'label' : 'Mulch de maleza',
+        },
+        {
+        'value' : '10',
+        'label' : 'Suelo desnudo',
+        },
 
-        ];
+    ];
 
     return plagasCacao;
 }
@@ -336,6 +341,8 @@ List<Map<String, dynamic>> solucionesXmes(){
 
     return solucionesXmes;
 }
+
+
 
 
 
