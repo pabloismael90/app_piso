@@ -1,5 +1,5 @@
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
-import 'package:app_piso/src/models/existePlaga_model.dart';
+import 'package:app_piso/src/models/enContacto_model.dart';
 import 'package:app_piso/src/models/paso_model.dart';
 
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
@@ -24,8 +24,8 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     var uuid = Uuid();
 
     Paso paso = Paso();
-    ExistePlaga existePlaga = ExistePlaga();
-    List<ExistePlaga> listaPlagas = [];
+    EnContacto enContacto = EnContacto();
+    List<EnContacto> listaPlagas = [];
 
     final fincasBloc = new FincasBloc();
     
@@ -208,7 +208,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     _listaPlagas(){
 
         radios.forEach((key, value) {
-            final ExistePlaga itemPiso = ExistePlaga();
+            final EnContacto itemPiso = EnContacto();
             itemPiso.id = uuid.v1();
             itemPiso.idPlanta = paso.id;
             itemPiso.idPlaga = int.parse(key);

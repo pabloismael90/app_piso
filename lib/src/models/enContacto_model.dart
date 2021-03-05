@@ -1,5 +1,5 @@
-class ExistePlaga {
-    ExistePlaga({
+class EnContacto {
+    EnContacto({
         this.id,
         this.idPlaga,
         this.idPlanta,
@@ -11,7 +11,7 @@ class ExistePlaga {
     String idPlanta;
     int existe;
 
-    factory ExistePlaga.fromJson(Map<String, dynamic> json) => ExistePlaga(
+    factory EnContacto.fromJson(Map<String, dynamic> json) => EnContacto(
         id: json["id"],
         idPlaga: json["idPlaga"],
         idPlanta: json["idPlanta"],

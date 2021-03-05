@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:app_piso/src/models/acciones_model.dart';
 import 'package:app_piso/src/models/decisiones_model.dart';
-import 'package:app_piso/src/models/existePlaga_model.dart';
+import 'package:app_piso/src/models/enContacto_model.dart';
 import 'package:app_piso/src/models/paso_model.dart';
 import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:path/path.dart';
@@ -156,9 +156,9 @@ class DBProvider {
         return res;
     }
 
-    nuevoExistePlagas( ExistePlaga existePlaga ) async {
+    nuevoExistePlagas( EnContacto enContacto ) async {
         final db  = await database;
-        final res = await db.insert('ExistePlaga',  existePlaga.toJson() );
+        final res = await db.insert('EnContacto',  enContacto.toJson() );
         return res;
     }
 
@@ -305,13 +305,13 @@ class DBProvider {
         return list;           
     }
 
-    Future<List<ExistePlaga>> getTodasPlagasIdPaso(String idPaso) async {
+    Future<List<EnContacto>> getTodasPlagasIdPaso(String idPaso) async {
 
         final db  = await database;
         final res = await db.rawQuery("SELECT * FROM ExistePlaga WHERE idPaso = '$idPaso'");
 
-        List<ExistePlaga> list = res.isNotEmpty 
-                    ? res.map( (c) => ExistePlaga.fromJson(c) ).toList() 
+        List<EnContacto> list = res.isNotEmpty 
+                    ? res.map( (c) => EnContacto.fromJson(c) ).toList() 
                     : [];
         //print(list);
         return list;
