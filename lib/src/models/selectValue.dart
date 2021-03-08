@@ -106,7 +106,7 @@ List<Map<String, dynamic>> variedadCacao(){
 }
 
 List<Map<String, dynamic>> itemContacto(){
-    final List<Map<String, dynamic>>  plagasCacao = [
+    final List<Map<String, dynamic>>  contactoCacao = [
             
         {
         'value' : '0',
@@ -114,7 +114,7 @@ List<Map<String, dynamic>> itemContacto(){
         },
         {
         'value' : '1',
-        'label' : 'Zacate perene ',
+        'label' : 'Zacate perene',
         },
         {
         'value' : '2',
@@ -130,7 +130,7 @@ List<Map<String, dynamic>> itemContacto(){
         },
         {
         'value' : '5',
-        'label' : 'Bejucos en suelo ',
+        'label' : 'Bejucos en suelo',
         },
         {
         'value' : '6',
@@ -142,7 +142,7 @@ List<Map<String, dynamic>> itemContacto(){
         },
         {
         'value' : '8',
-        'label' : 'Hojarasca ',
+        'label' : 'Hojarasca',
         },
         {
         'value' : '9',
@@ -155,8 +155,51 @@ List<Map<String, dynamic>> itemContacto(){
 
     ];
 
-    return plagasCacao;
+    return contactoCacao;
 }
+
+List<Map<String, dynamic>> hierbaProblematica(){
+    final List<Map<String, dynamic>>  hierbaProblematica = [
+            
+        {
+        'value' : '0',
+        'label' : 'Zacate anual',
+        },
+        {
+        'value' : '1',
+        'label' : 'Zacate perene',
+        },
+        {
+        'value' : '2',
+        'label' : 'Hoja ancha anual',
+        },
+        {
+        'value' : '3',
+        'label' : 'Hoja ancha perenne',
+        },
+        {
+        'value' : '4',
+        'label' : 'Ciperácea o Coyolillo',
+        },
+        {
+        'value' : '5',
+        'label' : 'Bejucos',
+        },
+        {
+        'value' : '6',
+        'label' : 'Tanda o planta parasitica',
+        },
+
+        {
+        'value' : '7',
+        'label' : 'Suelo desnudo',
+        },
+
+    ];
+
+    return hierbaProblematica;
+}
+
 
 List<Map<String, dynamic>> situacionPlaga(){
     final List<Map<String, dynamic>>  situacionPlaga = [

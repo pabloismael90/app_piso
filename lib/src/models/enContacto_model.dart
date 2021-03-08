@@ -1,27 +1,27 @@
 class EnContacto {
     EnContacto({
         this.id,
-        this.idPlaga,
-        this.idPlanta,
+        this.idPaso,
+        this.idContacto,
         this.existe = 1,
     });
 
     String id;
-    int idPlaga;
-    String idPlanta;
+    String idPaso;
+    int idContacto;
     int existe;
 
     factory EnContacto.fromJson(Map<String, dynamic> json) => EnContacto(
         id: json["id"],
-        idPlaga: json["idPlaga"],
-        idPlanta: json["idPlanta"],
+        idPaso: json["idPaso"],
+        idContacto: json["idContacto"],
         existe: json["existe"],
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
-        "idPlaga":idPlaga,
-        "idPlanta": idPlanta,
+        "idPaso": idPaso,
+        "idContacto":idContacto,
         "existe": existe,
     };
 }

@@ -38,7 +38,7 @@ class _PasoPageState extends State<PasoPage> {
                     if (paso.length == 0) {
                         return Column(
                             children: [
-                                TitulosPages(titulo: 'Estacion $indiceCaminata'),
+                                TitulosPages(titulo: 'Caminata $indiceCaminata'),
                                 Divider(), 
                                 Expanded(child: Center(
                                     child: Text('No hay datos: \nIngrese datos de pasos', 
@@ -53,7 +53,7 @@ class _PasoPageState extends State<PasoPage> {
                     
                     return Column(
                         children: [
-                            TitulosPages(titulo: 'Estacion $indiceCaminata'),
+                            TitulosPages(titulo: 'Caminata $indiceCaminata'),
                             Divider(),                            
                             Expanded(child: SingleChildScrollView(child: _listaDePisos(paso, context, indiceCaminata))),
                         ],
@@ -79,7 +79,7 @@ class _PasoPageState extends State<PasoPage> {
 
         return ListView.builder(
             itemBuilder: (context, index) {
-                if (paso[index].estacion == indiceCaminata) {
+                if (paso[index].caminata == indiceCaminata) {
 
                     return Dismissible(
                         key: UniqueKey(),
@@ -107,7 +107,7 @@ class _PasoPageState extends State<PasoPage> {
                                             Padding(
                                                 padding: EdgeInsets.only(top: 10, bottom: 10.0),
                                                 child: Text(
-                                                    "Piso ${index+1}",
+                                                    "Paso ${index+1}",
                                                     overflow: TextOverflow.ellipsis,
                                                     maxLines: 2,
                                                     style: Theme.of(context).textTheme.headline6,
@@ -216,7 +216,7 @@ class _PasoPageState extends State<PasoPage> {
     }
 
 
-    Widget  _addPaso(BuildContext context,  int estacion, TestPiso plaga, int value){
+    Widget  _addPaso(BuildContext context,  int caminata, TestPiso plaga, int value){
         return RaisedButton.icon(
             
             icon:Icon(Icons.add_circle_outline_outlined),
@@ -227,7 +227,7 @@ class _PasoPageState extends State<PasoPage> {
                     .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
             ),
             padding:EdgeInsets.all(13),
-            onPressed:() => Navigator.pushNamed(context, 'addPasos', arguments: [estacion,plaga.id,value]),
+            onPressed:() => Navigator.pushNamed(context, 'addPasos', arguments: [caminata,plaga.id,value]),
         );
     }
 

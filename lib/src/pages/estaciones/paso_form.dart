@@ -29,12 +29,12 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
 
     final fincasBloc = new FincasBloc();
     
-    final List<Map<String, dynamic>>  itemPlagas = selectMap.plagasCacao();
+    final List<Map<String, dynamic>>  itemEnContato = selectMap.itemContacto();
     final Map radios = {};
     void radioGroupKeys(){
-        for(int i = 0 ; i < itemPlagas.length ; i ++){
+        for(int i = 0 ; i < itemEnContato.length ; i ++){
             
-        radios[itemPlagas[i]['value']] = '-1';
+        radios[itemEnContato[i]['value']] = '2';
         }
     }
 
@@ -66,55 +66,17 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                         key: formKey,
                         child: Column(
                             children: <Widget>[
-                                TitulosPages(titulo: 'Planta $countPlanta caminata ${paso.caminata}'),
+                                TitulosPages(titulo: 'Paso $countPlanta Caminata ${paso.caminata}'),
                                 Divider(),
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                            Expanded(child: Text('Lista Plagas', style: Theme.of(context).textTheme.headline6
-                                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600))),
-                                            Container(
-                                                width: 50,
-                                                child: Text('Si', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                                                                .copyWith(fontSize: 16, fontWeight: FontWeight.w600,) ),
-                                            ),
-                                            Container(
-                                                width: 50,
-                                                child: Text('No', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                                                                .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                                            ),
-                                        ],
-                                    ),
+                                    child: Text('Punta de zapato en contacto con :', style: Theme.of(context).textTheme.headline6
+                                                .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
                                 ),
                                 Divider(),
                                 _plagasList(),
                                 Divider(),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                        Expanded(child: Container(),),
-                                        Container(
-                                            width: 50,
-                                            child: Text('Alta', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
-                                            //color: Colors.deepPurple,
-                                        ),
-                                        Container(
-                                            width: 50,
-                                            child: Text('Media', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
-                                            //color: Colors.deepPurple,
-                                        ),
-                                        Container(
-                                            width: 50,
-                                            child: Text('Baja', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
-                                        ),
-                                    ],
-                                ),
-                                Divider(),
+                                
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 30.0),
                                     child: _botonsubmit()
@@ -135,54 +97,25 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             
             itemBuilder: (BuildContext context, int index) {
                 
-                String labelPlaga = itemPlagas.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "1","label": "No data"})['label'];
-                int idPlaga = int.parse(itemPlagas.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "100","label": "No data"})['value']);
+                String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "1","label": "No data"})['label'];
+                int idPlaga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "100","label": "No data"})['value']);
                 
-                
-                
-                return Column(
-                    children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                                Expanded(child: Text('$labelPlaga', style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16, fontWeight: FontWeight.w600))),
-                                Transform.scale(
-                                    scale: 1.2,
-                                    child: Radio(
-                                        value: '1',
-                                        groupValue: radios[itemPlagas[idPlaga]['value']],
-                                        onChanged: (value){
-                                            setState(() {
-                                                radios[itemPlagas[idPlaga]['value']] = value;
-                                            });
-                                        },
-                                        activeColor: Colors.teal[900],
-                                    ),
-                                ),
-                                Transform.scale(
-                                    scale: 1.2,
-                                    child: Radio(
-                                        value:'2',
-                                        groupValue: radios[itemPlagas[idPlaga]['value']],
-                                        onChanged: (value){
-                                            setState(() {
-                                                radios[itemPlagas[idPlaga]['value']] = value;
-                                            });
-                                        },
-                                        activeColor: Colors.red[900],
-                                    ),
-                                ),
-                            
+                return CheckboxListTile(
+                    title: Text(labelPlaga, style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                    value: (radios[itemEnContato[idPlaga]['value']] == '1') ? true : false,
+                    onChanged: (value){
+                        setState(() {
+                            //print(value);
+                            radios[itemEnContato[idPlaga]['value']] = value ? '1' : '2';
+                            print(radios[itemEnContato[idPlaga]['value']]);
+                        });
+                    }
 
-                            ],
-                        ),
-                        Divider()
-                    ],
                 );
         
             },
             shrinkWrap: true,
-            itemCount: itemPlagas.length,
+            itemCount: itemEnContato.length,
             physics: NeverScrollableScrollPhysics(),
         );
         
@@ -210,8 +143,8 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         radios.forEach((key, value) {
             final EnContacto itemPiso = EnContacto();
             itemPiso.id = uuid.v1();
-            itemPiso.idPlanta = paso.id;
-            itemPiso.idPlaga = int.parse(key);
+            itemPiso.idPaso = paso.id;
+            itemPiso.idContacto = int.parse(key);
             itemPiso.existe = int.parse(value);
 
 
@@ -221,21 +154,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     }
 
     void _submit(){
-        variableVacias = 0;
-        radios.forEach((key, value) {
-            if (value == '-1') {
-                variableVacias ++;
-            } 
-        });
-
-
-
-
-        if  ( variableVacias !=  0){
-            mostrarSnackbar(variableVacias);
-            return null;
-        }
-
+        
         setState(() {_guardando = true;});
 
         
@@ -245,29 +164,20 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             fincasBloc.addPlata(paso, paso.idTest, paso.caminata);
 
             listaPlagas.forEach((item) {
-                DBProvider.db.nuevoExistePlagas(item);
+                DBProvider.db.nuevoEnContacto(item);
             });
 
         }
          
         setState(() {_guardando = false;});
 
-        Navigator.pop(context, 'estaciones');
+        Navigator.pop(context, 'pasos');
        
         
     }
 
 
-    void mostrarSnackbar(int variableVacias){
-        final snackbar = SnackBar(
-            content: Text('Hay $variableVacias Campos Vacios, Favor llene todo los campos',
-                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
-            ),
-            duration: Duration(seconds: 2),
-        );
-        setState(() {_guardando = false;});
-        scaffoldKey.currentState.showSnackBar(snackbar);
-    }
+   
 
 
 }

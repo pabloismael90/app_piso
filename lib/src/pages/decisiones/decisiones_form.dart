@@ -32,7 +32,8 @@ class _DesicionesPageState extends State<DesicionesPage> {
     bool _guardando = false;
     var uuid = Uuid();
     
-    final List<Map<String, dynamic>>  itemPlagas = selectMap.plagasCacao();
+    final List<Map<String, dynamic>>  itemEnContato = selectMap.itemContacto();
+    final List<Map<String, dynamic>>  hierbaProblematica = selectMap.hierbaProblematica();
     final List<Map<String, dynamic>>  itemSituacion = selectMap.situacionPlaga();
     final List<Map<String, dynamic>>  itemProbSuelo = selectMap.problemasPlagaSuelo();
     final List<Map<String, dynamic>>  itemProbSombra = selectMap.problemasPlagaSombra();
@@ -42,6 +43,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     Widget textFalse = Text('0.00%', textAlign: TextAlign.center);
     final Map checksPrincipales = {};
+    final Map checkhierbaProblema = {};
     final Map checksSituacion = {};
     final Map checksSuelo = {};
     final Map checksSombra = {};
@@ -50,8 +52,11 @@ class _DesicionesPageState extends State<DesicionesPage> {
     final Map itemResultado = {};
 
     void checkKeys(){
-        for(int i = 0 ; i < itemPlagas.length ; i ++){
-            checksPrincipales[itemPlagas[i]['value']] = false;
+        for(int i = 0 ; i < itemEnContato.length ; i ++){
+            checksPrincipales[itemEnContato[i]['value']] = false;
+        }
+        for(int i = 0 ; i < hierbaProblematica.length ; i ++){
+            checkhierbaProblema[hierbaProblematica[i]['value']] = false;
         }
         for(int i = 0 ; i < itemSituacion.length ; i ++){
             checksSituacion[itemSituacion[i]['value']] = false; 
@@ -70,32 +75,21 @@ class _DesicionesPageState extends State<DesicionesPage> {
             itemActividad[i] = [];
             itemResultado[i] = '';
         }
+
     }
     
 
 
     final formKey = new GlobalKey<FormState>();
 
-    Future<double> _countPercentPlaga(String idTest, int caminata, int idPlaga) async{
-        double countPalga = await DBProvider.db.countPisoCaminata(idTest, caminata, idPlaga);         
-        return countPalga*100;
-    }
+   
     
     Future<double> _countPercentTotal(String idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.countPisoTotal(idTest, idPlaga);         
+        double countPalga = await DBProvider.db.countPisoTotal(idTest, idPlaga);
+        //print(countPalga);        
         return countPalga*100;
     }
 
-
-    Future<double> _countPercentProduccion(String idTest, int caminata, int estado) async{
-        double countProduccion = await DBProvider.db.countProduccion(idTest, caminata, estado);
-        return countProduccion*100;
-    }
-
-    Future<double> _countPercentTotalProduccion(String idTest, int estado) async{
-        double countProduccion = await DBProvider.db.countTotalProduccion(idTest, estado);
-        return countProduccion*100;
-    }
     
     @override
     void initState() {
@@ -207,7 +201,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                             children: [
                                                                 Container(                                                                    
                                                                     child: Text(
-                                                                        "Porcentaje de Pasos afectadas",
+                                                                        "Porcentaje de cobertura",
                                                                         textAlign: TextAlign.center,
                                                                         style: Theme.of(context).textTheme
                                                                             .headline5
@@ -215,11 +209,11 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                                     ),
                                                                 ),
                                                                 Padding(
-                                                                    padding: EdgeInsets.only(left: 10, top: 5),
+                                                                    padding: EdgeInsets.only(left: 10),
                                                                     child: Icon(
                                                                         Icons.info_outline_rounded,
                                                                         color: Colors.green,
-                                                                        size: 25.0,
+                                                                        size: 22.0,
                                                                     ),
                                                                 ),
                                                             ],
@@ -227,7 +221,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                         onTap: () => _dialogText(context),
                                                     ),
                                                 ),
-                                                Divider(),
+                                                
                                                 Container(
                                                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                                     width: double.infinity,
@@ -245,10 +239,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                     ),
                                                     child: Column(
                                                         children: [
-                                                            _encabezadoTabla(),
-                                                            Divider(),
                                                             _countPlagas(plagaid, 1),
-                                                            _countProduccion(plagaid),
                                                         ],
                                                     ),
                                                 ),
@@ -383,90 +374,23 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     }
     
-    Widget _encabezadoTabla(){
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-                Expanded(child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text('Estaciones', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
-                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),),
-                Container(
-                    width: 50,
-                    child: Text('1', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                    width: 50,
-                    child: Text('2', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                    width: 50,
-                    child: Text('3', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
-                ),
-                Container(
-                    width: 50,
-                    child: Text('Total', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-            ],
-        );
-    }
+    
 
     Widget _countPlagas(String idTest, int estacion){
         List<Widget> lisItem = List<Widget>();
 
-        for (var i = 0; i < itemPlagas.length; i++) {
-            String labelPlaga = itemPlagas.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
-            int idplga = int.parse(itemPlagas.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
+        for (var i = 0; i < itemEnContato.length; i++) {
+            String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
+            //print(idTest);
             lisItem.add(
                 Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                        Expanded(child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
-                        ),),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentPlaga(idTest, 1, idplga),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-                                    
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentPlaga(idTest, 2, idplga),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentPlaga(idTest, 3, idplga),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
+                        Expanded(
+                            child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
                             ),
                         ),
                         Container(
@@ -491,111 +415,22 @@ class _DesicionesPageState extends State<DesicionesPage> {
         return Column(children:lisItem,);
     }
 
-    Widget _countProduccion(String idTest){
-        List<Widget> lisProd= List<Widget>();
-
-        List<String> nameProd = ['Alta','Media','Baja'];
-
-        lisProd.add(
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                    Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('Producción', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
-                                .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                    )
-                ],
-            )
-        );
-        lisProd.add(Divider());
-        for (var i = 0; i < nameProd.length; i++) {
-            lisProd.add(
-
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                        Expanded(child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Text('%${nameProd[i]}', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
-                        ),),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentProduccion(idTest, 1, i+1),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-                                    
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentProduccion(idTest, 2, i+1),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentProduccion(idTest, 3, i+1),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentTotalProduccion(idTest, i+1),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        
-                    ],
-                )
-            );
-            lisProd.add(Divider());
-        }
-        return Column(children:lisProd,);
-    }
-
 
     Widget _plagasPrincipales(){
-        List<Widget> listPrincipales = List<Widget>();
+        List<Widget> listHierbaProblema = List<Widget>();
 
-        listPrincipales.add(
+        listHierbaProblema.add(
             Column(
                 children: [
                     Container(
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "Plagas principales del momento",
+                                "Hierbas que consideran problematicas",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -605,20 +440,20 @@ class _DesicionesPageState extends State<DesicionesPage> {
             
         );
 
-        for (var i = 0; i < itemPlagas.length; i++) {
-            String labelPlaga = itemPlagas.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
-            //print(checksPrincipales[itemPlagas[i]['value']]);
+        for (var i = 0; i < hierbaProblematica.length; i++) {
+            String labelPlaga = hierbaProblematica.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
-            listPrincipales.add(
+            
+            listHierbaProblema.add(
 
                 CheckboxListTile(
                     title: Text('$labelPlaga',
                         style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16),
                     ),
-                    value: checksPrincipales[itemPlagas[i]['value']], 
+                    value: checkhierbaProblema[hierbaProblematica[i]['value']], 
                     onChanged: (value) {
                         setState(() {
-                            checksPrincipales[itemPlagas[i]['value']] = value;
+                            checkhierbaProblema[hierbaProblematica[i]['value']] = value;
                             //print(value);
                         });
                     },
@@ -643,7 +478,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 blurRadius: 17.0),
                         ],
                 ),
-                child: Column(children:listPrincipales,)
+                child: Column(children:listHierbaProblema,)
             ),
         );
     }

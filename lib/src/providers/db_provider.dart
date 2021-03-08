@@ -62,7 +62,7 @@ class DBProvider {
                     ' nombreLote TEXT,'
                     ' areaLote REAL,'
                     ' variedadCacao INTEGER,'
-                    ' numeroPaso INTEGER,'
+                    ' numeroPlanta INTEGER,'
                     'CONSTRAINT fk_parcela FOREIGN KEY(idFinca) REFERENCES Finca(id) ON DELETE CASCADE'
                     ')'
                 );
@@ -156,7 +156,7 @@ class DBProvider {
         return res;
     }
 
-    nuevoExistePlagas( EnContacto enContacto ) async {
+    nuevoEnContacto( EnContacto enContacto ) async {
         final db  = await database;
         final res = await db.insert('EnContacto',  enContacto.toJson() );
         return res;
@@ -305,10 +305,10 @@ class DBProvider {
         return list;           
     }
 
-    Future<List<EnContacto>> getTodasPlagasIdPaso(String idPaso) async {
+    Future<List<EnContacto>> getEnContactoIdPaso(String idPaso) async {
 
         final db  = await database;
-        final res = await db.rawQuery("SELECT * FROM ExistePlaga WHERE idPaso = '$idPaso'");
+        final res = await db.rawQuery("SELECT * FROM EnContacto WHERE idPaso = '$idPaso'");
 
         List<EnContacto> list = res.isNotEmpty 
                     ? res.map( (c) => EnContacto.fromJson(c) ).toList() 
@@ -317,16 +317,16 @@ class DBProvider {
         return list;
     }
 
-    Future<int> getPlagasIdPaso(String idPaso, int idplaga) async {
+    // Future<int> getPlagasIdPaso(String idPaso, int idplaga) async {
         
-        final db  = await database;
-        String query = "SELECT existe FROM ExistePlaga WHERE idPaso = '$idPaso' AND idPlaga = '$idplaga'";
-        final  res = await db.rawQuery(query);
-        int value = res.isNotEmpty ? res[0]['existe'] : -1;
-        //print(value);
+    //     final db  = await database;
+    //     String query = "SELECT existe FROM ExistePlaga WHERE idPaso = '$idPaso' AND idPlaga = '$idplaga'";
+    //     final  res = await db.rawQuery(query);
+    //     int value = res.isNotEmpty ? res[0]['existe'] : -1;
+    //     //print(value);
 
-        return value;
-    }
+    //     return value;
+    // }
 
     Future<List<Decisiones>> getDecisionesIdTest(String idTest) async{
         final db = await database;
@@ -400,71 +400,26 @@ class DBProvider {
 
 
     //Conteos analisis
-    Future<double> countPisoCaminata( String idTest, int caminata, int idPlaga) async {
 
+
+    Future<double> countPisoTotal( String idTest, int idContacto) async {
         final db = await database;
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
-                        "INNER JOIN ExistePlaga ON  Paso.id = ExistePlaga.idPaso " +
-                        "WHERE idTest = '$idTest' AND caminata = '$caminata' AND idPlaga = '$idPlaga' AND existe = 1";
-        int res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/10;
+                        "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
+                        "WHERE idTest = '$idTest' AND idContacto = '$idContacto' AND existe = 1";
+        int  res = Sqflite.firstIntValue(await db.rawQuery(query));
+        double value = res/60;
         return value;
 
     }
 
-    Future<double> countPisoTotal( String idTest, int idPlaga) async {
 
-        final db = await database;
-        String query =  "SELECT COUNT(*) FROM TestPiso "+
-                        "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
-                        "INNER JOIN ExistePlaga ON  Paso.id = ExistePlaga.idPaso " +
-                        "WHERE idTest = '$idTest' AND idPlaga = '$idPlaga' AND existe = 1";
-        int res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/30;
-        return value;
 
-    }
 
-    Future<double> countDeficiencia( String idTest, int caminata) async {
 
-        final db = await database;
-        String query =  "SELECT COUNT(*) FROM Paso WHERE idTest = '$idTest' AND caminata = '$caminata' AND deficiencia = 1";
-        int res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/10;
-        return value;
 
-    }
 
-    Future<double> countTotalDeficiencia( String idTest ) async {
-
-        final db = await database;
-        String query =  "SELECT COUNT(*) FROM Paso WHERE idTest = '$idTest' AND deficiencia = 1";
-        int res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/30;
-        return value;
-
-    }
-
-    Future<double> countProduccion( String idTest, int caminata, int estado) async {
-
-        final db = await database;
-        String query =  "SELECT COUNT(*) FROM Paso WHERE idTest = '$idTest' AND caminata = '$caminata' AND produccion = '$estado'";
-        int res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/10;
-        return value;
-
-    }
-
-    Future<double> countTotalProduccion( String idTest, int estado ) async {
-
-        final db = await database;
-        String query =  "SELECT COUNT(*) FROM Paso WHERE idTest = '$idTest' AND produccion = '$estado'";
-        int res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/30;
-        return value;
-
-    }
 
     // Eliminar registros
     Future<int> deleteFinca( String idFinca ) async {

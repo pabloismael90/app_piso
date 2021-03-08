@@ -306,7 +306,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Text(
-                    "Complete las estaciones",
+                    "Complete las caminatas",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme
                         .headline5
