@@ -201,39 +201,62 @@ List<Map<String, dynamic>> hierbaProblematica(){
 }
 
 
-List<Map<String, dynamic>> situacionPlaga(){
-    final List<Map<String, dynamic>>  situacionPlaga = [
+List<Map<String, dynamic>> competenciaHierba(){
+    final List<Map<String, dynamic>>  competenciaHierba = [
         {
             'value': '0',
-            'label': 'Varias plagas en todos los puntos'
+            'label': 'Alta Competencia'
         },
         {
             'value': '1',
-            'label': 'Varias plagas en algunos puntos'
+            'label': 'Media competencia'
         },
         {
             'value': '2',
-            'label': 'Pocas plagas en todos los puntos'
+            'label': 'Sin Competencia'
+        },
+
+    ];
+
+    return competenciaHierba;
+}
+List<Map<String, dynamic>> valoracionCobertura(){
+    final List<Map<String, dynamic>>  valoracionCobertura = [
+        {
+            'value': '0',
+            'label': 'Piso cubierto pero compite'
+        },
+        {
+            'value': '1',
+            'label': 'Piso medio cubierto y compite'
+        },
+        {
+            'value': '2',
+            'label': 'Piso cubierto pero no compite'
         },
         {
             'value': '3',
-            'label': 'Pocas plagas en algunos puntos'
+            'label': 'Piso no cubierto'
         },
         {
             'value': '4',
-            'label': 'Una plaga en todos los puntos'
+            'label': 'Piso con mucho bejuco'
         },
         {
             'value': '5',
-            'label': 'Una plaga en algunos puntos'
+            'label': 'Muchas plantas con bejuco'
+        },
+        {
+            'value': '6',
+            'label': 'Plantas con tanda'
         }
 
     ];
 
-    return situacionPlaga;
+    return valoracionCobertura;
 }
-List<Map<String, dynamic>> problemasPlagaSuelo(){
-    final List<Map<String, dynamic>>  problemasSuelo = [
+List<Map<String, dynamic>> observacionSuelo(){
+    final List<Map<String, dynamic>>  observacionSuelo = [
         {
             'value': '0',
             'label': 'Suelo erosionado'
@@ -244,140 +267,118 @@ List<Map<String, dynamic>> problemasPlagaSuelo(){
         },
         {
             'value': '2',
-            'label': 'Mucha competencia'
-        },
-        {
-            'value': '3',
             'label': 'Mal drenaje'
         },
         {
-            'value': '4',
-            'label': 'Falta obras de conservación'
-        },
-        {
-            'value': '5',
+            'value': '3',
             'label': 'Suelo compacto'
         },
         {
-            'value': '6',
-            'label': 'Suelo con poca MO'
+            'value': '4',
+            'label': 'Suelo  con poco Materia orgánica'
         },
         {
-            'value': '7',
-            'label': 'No usa abono o fertilizante'
+            'value': '5',
+            'label': 'No usa abobo o fertilizante'
         }
 
     ];
 
-    return problemasSuelo;
+    return observacionSuelo;
 }
-List<Map<String, dynamic>> problemasPlagaSombra(){
-    final List<Map<String, dynamic>>  problemasSombra = [
+List<Map<String, dynamic>> observacionSombra(){
+    final List<Map<String, dynamic>>  observacionSombra = [
         {
             'value': '0',
-            'label': 'Sombra muy densa'
-        },
-        {
-            'value': '1',
             'label': 'Sombra muy rala'
         },
         {
-            'value': '2',
+            'value': '1',
             'label': 'Sombra mal distribuida'
         },
         {
+            'value': '2',
+            'label': 'Árboles de sombra no adecuadas'
+        },
+        {
             'value': '3',
-            'label': 'Arboles de sombra no adecuada'
-        },
-        {
-            'value': '4',
-            'label': 'Mucha auto-sombra'
-        },
-        {
-            'value': '5',
-            'label': 'Mucho banano'
+            'label': 'Poco banano o plátano'
         }
 
     ];
 
-    return problemasSombra;
+    return observacionSombra;
 }
-List<Map<String, dynamic>> problemasPlagaManejo(){
-    final List<Map<String, dynamic>>  problemasManejo = [
+
+List<Map<String, dynamic>> observacionManejo(){
+    final List<Map<String, dynamic>>  observacionManejo = [
         {
             'value': '0',
-            'label': 'Poda no adecuada'
+            'label': 'Chapoda no adecuada'
         },
         {
             'value': '1',
-            'label': 'Piso no manejado'
+            'label': 'Chapodas tardías'
         },
         {
             'value': '2',
-            'label': 'No eliminan mazorcas enfermas'
+            'label': 'No hay manejo selectivo'
         },
         {
             'value': '3',
-            'label': 'No hay manejo de plagas'
-        },
-        {
-            'value': '4',
             'label': 'Plantas desnutridas'
         },
         {
+            'value': '4',
+            'label': 'Plantas viejas'
+        },
+        {
             'value': '5',
-            'label': 'Plantación vieja'
-        },
-        {
-            'value': '6',
-            'label': 'Variedades susceptibles'
-        },
-        {
-            'value': '7',
-            'label': 'Variedades no productivas'
+            'label': 'Mala selección de herbicidas'
         }
 
     ];
 
-    return problemasManejo;
+    return observacionManejo;
 }
+
 List<Map<String, dynamic>> solucionesXmes(){
     final List<Map<String, dynamic>>  solucionesXmes = [
         {
             'value': '0',
-            'label': 'Recuento de plagas'
+            'label': 'Recuento de maleza o piso'
         },
         {
             'value': '1',
-            'label': 'Cortar las mazorcas enfermas'
+            'label': 'Chapoda tendida'
         },
         {
             'value': '2',
-            'label': 'Abonar las plantas'
+            'label': 'Chapoda selectiva'
         },
         {
             'value': '3',
-            'label': 'Aplicar Caldos'
+            'label': 'Aplicar herbicida en toda la parcela'
         },
         {
             'value': '4',
-            'label': 'Aplicar Fungicidas'
+            'label': 'Aplicar herbicidas en parches'
         },
         {
             'value': '5',
-            'label': 'Manejo de sombra'
+            'label': 'Manejo de bejuco'
         },
         {
             'value': '6',
-            'label': 'Podar las plantas de cacao'
+            'label': 'Manejo de tanda'
         },
         {
             'value': '7',
-            'label': 'Aplicar venenos para Zompopo'
+            'label': 'Regulación de sombra'
         },
         {
             'value': '8',
-            'label': 'Control de Comején'
+            'label': 'Abonar las plantas de cacao'
         }
 
     ];

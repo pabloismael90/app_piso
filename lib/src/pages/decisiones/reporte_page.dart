@@ -20,10 +20,12 @@ class ReportePage extends StatefulWidget {
 
 class _ReportePageState extends State<ReportePage> {
     final List<Map<String, dynamic>>  itemEnContato = selectMap.itemContacto();
-    final List<Map<String, dynamic>>  itemSituacion = selectMap.situacionPlaga();
-    final List<Map<String, dynamic>>  itemProbSuelo = selectMap.problemasPlagaSuelo();
-    final List<Map<String, dynamic>>  itemProbSombra = selectMap.problemasPlagaSombra();
-    final List<Map<String, dynamic>>  itemProbManejo = selectMap.problemasPlagaManejo();
+    final List<Map<String, dynamic>>  hierbaProblematica = selectMap.hierbaProblematica();
+    final List<Map<String, dynamic>>  itemCompetencia = selectMap.competenciaHierba();
+    final List<Map<String, dynamic>>  itemValoracion = selectMap.valoracionCobertura();
+    final List<Map<String, dynamic>>  itemObsSuelo = selectMap.observacionSuelo();
+    final List<Map<String, dynamic>>  itemObsSombra = selectMap.observacionSombra();
+    final List<Map<String, dynamic>>  itemObsManejo = selectMap.observacionManejo();
     final List<Map<String, dynamic>>  _meses = selectMap.listMeses();
     final List<Map<String, dynamic>>  listSoluciones = selectMap.solucionesXmes();
     
@@ -74,12 +76,11 @@ class _ReportePageState extends State<ReportePage> {
 
                     pageItem.add(_principalData(idTest,context, finca, parcela));
                     
-                    pageItem.add( _plagasPrincipales(snapshot.data[0]));
+                    pageItem.add( _hierbasProblematicas(snapshot.data[0]));
                     _plagasPDF(idTest,1);
-                    pageItem.add( _situacionPlaga(snapshot.data[0]));
-                    pageItem.add( _problemasSuelo(snapshot.data[0]));
-                    pageItem.add( _problemasSombra(snapshot.data[0]));
-                    pageItem.add( _problemasManejo(snapshot.data[0]));
+                    pageItem.add( _competeciaValoracion(snapshot.data[0]));
+                    pageItem.add( _observaciones(snapshot.data[0]));
+                    pageItem.add( _obsManejo(snapshot.data[0]));
                     pageItem.add( _accionesMeses(snapshot.data[1]));
                     
                     
@@ -353,8 +354,6 @@ class _ReportePageState extends State<ReportePage> {
         
     }
 
-    
-
     Widget _countPlagas(String idTest, int caminata){
         List<Widget> lisItem = List<Widget>();
 
@@ -392,7 +391,7 @@ class _ReportePageState extends State<ReportePage> {
     }
 
 
-    Widget _plagasPrincipales(List<Decisiones> decisionesList){
+    Widget _hierbasProblematicas(List<Decisiones> decisionesList){
         List<Widget> listPrincipales = List<Widget>();
 
         listPrincipales.add(
@@ -402,11 +401,11 @@ class _ReportePageState extends State<ReportePage> {
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "Plagas principales del momento",
+                                "Hierbas que consideran problematicas",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -420,7 +419,7 @@ class _ReportePageState extends State<ReportePage> {
         for (var item in decisionesList) {
 
             if (item.idPregunta == 1) {
-                String label = itemEnContato.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
+                String label = hierbaProblematica.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
 
                 listPrincipales.add(
 
@@ -464,7 +463,7 @@ class _ReportePageState extends State<ReportePage> {
         
     }
 
-    Widget _situacionPlaga(List<Decisiones> decisionesList){
+    Widget _competeciaValoracion(List<Decisiones> decisionesList){
         List<Widget> listPrincipales = List<Widget>();
 
         listPrincipales.add(
@@ -474,11 +473,11 @@ class _ReportePageState extends State<ReportePage> {
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "Situación de las plagas en la parcela",
+                                "Competencia entre hierbas y cacao",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -492,7 +491,7 @@ class _ReportePageState extends State<ReportePage> {
         for (var item in decisionesList) {
 
             if (item.idPregunta == 2) {
-                String label= itemSituacion.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
+                String label= itemCompetencia.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
 
                 listPrincipales.add(
 
@@ -511,31 +510,6 @@ class _ReportePageState extends State<ReportePage> {
             }
             
         }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
-        );
-        
-    }
-
-    Widget _problemasSuelo(List<Decisiones> decisionesList){
-        List<Widget> listPrincipales = List<Widget>();
 
         listPrincipales.add(
             Column(
@@ -544,11 +518,11 @@ class _ReportePageState extends State<ReportePage> {
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "¿Porqué hay problemas de plagas?  Suelo",
+                                "Valoración de cobertura del piso",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -562,7 +536,7 @@ class _ReportePageState extends State<ReportePage> {
         for (var item in decisionesList) {
 
             if (item.idPregunta == 3) {
-                String label= itemProbSuelo.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
+                String label= itemValoracion.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
 
                 listPrincipales.add(
 
@@ -579,8 +553,6 @@ class _ReportePageState extends State<ReportePage> {
                     
                 );
             }
-            
-            
             
         }
         
@@ -606,7 +578,7 @@ class _ReportePageState extends State<ReportePage> {
         
     }
 
-    Widget _problemasSombra(List<Decisiones> decisionesList){
+    Widget _observaciones(List<Decisiones> decisionesList){
         List<Widget> listPrincipales = List<Widget>();
 
         listPrincipales.add(
@@ -616,11 +588,11 @@ class _ReportePageState extends State<ReportePage> {
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "¿Porqué hay problemas de plagas?  Sombra",
+                                "Observaciones de suelo",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -634,7 +606,122 @@ class _ReportePageState extends State<ReportePage> {
         for (var item in decisionesList) {
 
             if (item.idPregunta == 4) {
-                String label= itemProbSombra.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
+                String label= itemObsSuelo.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
+
+                listPrincipales.add(
+
+                    Container(
+                        child: CheckboxListTile(
+                        title: Text('$label'),
+                            value: item.repuesta == 1 ? true : false ,
+                            activeColor: Colors.teal[900], 
+                            onChanged: (value) {
+                                
+                            },
+                        ),
+                    )                  
+                    
+                );
+            }
+            
+        }
+
+        listPrincipales.add(
+            Column(
+                children: [
+                    Container(
+                        child: Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 10),
+                            child: Text(
+                                "Observaciones de sombra",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme
+                                    .headline5
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
+                            ),
+                        )
+                    ),
+                    Divider(),
+                ],
+            )
+            
+        );
+        
+
+        for (var item in decisionesList) {
+
+            if (item.idPregunta == 5) {
+                String label= itemObsSombra.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
+
+                listPrincipales.add(
+
+                    Container(
+                        child: CheckboxListTile(
+                        title: Text('$label'),
+                            value: item.repuesta == 1 ? true : false ,
+                            activeColor: Colors.teal[900], 
+                            onChanged: (value) {
+                                
+                            },
+                        ),
+                    )                  
+                    
+                );
+            }
+            
+        }
+        
+        return SingleChildScrollView(
+            child: Container(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                        BoxShadow(
+                                color: Color(0xFF3A5160)
+                                    .withOpacity(0.05),
+                                offset: const Offset(1.1, 1.1),
+                                blurRadius: 17.0),
+                        ],
+                ),
+                child: Column(children:listPrincipales,)
+            ),
+        );
+        
+    }
+
+    Widget _obsManejo(List<Decisiones> decisionesList){
+        List<Widget> listPrincipales = List<Widget>();
+
+        listPrincipales.add(
+            Column(
+                children: [
+                    Container(
+                        child: Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 10),
+                            child: Text(
+                                "Observaciones de manejo",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme
+                                    .headline5
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
+                            ),
+                        )
+                    ),
+                    Divider(),
+                ],
+            )
+            
+        );
+        
+
+        for (var item in decisionesList) {
+
+            if (item.idPregunta == 6) {
+                String label= itemObsManejo.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
 
                 listPrincipales.add(
 
@@ -678,78 +765,6 @@ class _ReportePageState extends State<ReportePage> {
         
     }
 
-    Widget _problemasManejo(List<Decisiones> decisionesList){
-        List<Widget> listPrincipales = List<Widget>();
-
-        listPrincipales.add(
-            
-            Column(
-                children: [
-                    Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "¿Porqué hay problemas de plagas? Manejo",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
-                            ),
-                        )
-                    ),
-                    Divider(),
-                ],
-            )
-            
-        );
-        
-
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 5) {
-                String label= itemProbManejo.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
-
-                    Container(
-                        child: CheckboxListTile(
-                        title: Text('$label'),
-                            value: item.repuesta == 1 ? true : false ,
-                            activeColor: Colors.teal[900],
-                            onChanged: (value) {
-                                
-                            },
-                        ),
-                    )                  
-                    
-                );
-            }
-            
-            
-            
-        }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
-        );
-        
-    }
 
     Widget _accionesMeses(List<Acciones> listAcciones){
         List<Widget> listPrincipales = List<Widget>();
@@ -765,7 +780,7 @@ class _ReportePageState extends State<ReportePage> {
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),

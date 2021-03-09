@@ -34,42 +34,45 @@ class _DesicionesPageState extends State<DesicionesPage> {
     
     final List<Map<String, dynamic>>  itemEnContato = selectMap.itemContacto();
     final List<Map<String, dynamic>>  hierbaProblematica = selectMap.hierbaProblematica();
-    final List<Map<String, dynamic>>  itemSituacion = selectMap.situacionPlaga();
-    final List<Map<String, dynamic>>  itemProbSuelo = selectMap.problemasPlagaSuelo();
-    final List<Map<String, dynamic>>  itemProbSombra = selectMap.problemasPlagaSombra();
-    final List<Map<String, dynamic>>  itemProbManejo = selectMap.problemasPlagaManejo();
+    final List<Map<String, dynamic>>  itemCompetencia = selectMap.competenciaHierba();
+    final List<Map<String, dynamic>>  itemValoracion = selectMap.valoracionCobertura();
+    final List<Map<String, dynamic>>  itemObsSuelo = selectMap.observacionSuelo();
+    final List<Map<String, dynamic>>  itemObsSombra = selectMap.observacionSombra();
+    final List<Map<String, dynamic>>  itemObsManejo = selectMap.observacionManejo();
     final List<Map<String, dynamic>>  _meses = selectMap.listMeses();
     final List<Map<String, dynamic>>  listSoluciones = selectMap.solucionesXmes();
 
     Widget textFalse = Text('0.00%', textAlign: TextAlign.center);
-    final Map checksPrincipales = {};
+
     final Map checkhierbaProblema = {};
-    final Map checksSituacion = {};
-    final Map checksSuelo = {};
-    final Map checksSombra = {};
-    final Map checksManejo = {};
+    final Map checksCompetencia = {};
+    final Map checksValoracion = {};
+    final Map checksObsSuelo = {};
+    final Map checksObsSombra = {};
+    final Map checksObsManejo = {};
     final Map itemActividad = {};
     final Map itemResultado = {};
 
     void checkKeys(){
-        for(int i = 0 ; i < itemEnContato.length ; i ++){
-            checksPrincipales[itemEnContato[i]['value']] = false;
-        }
+
         for(int i = 0 ; i < hierbaProblematica.length ; i ++){
             checkhierbaProblema[hierbaProblematica[i]['value']] = false;
         }
-        for(int i = 0 ; i < itemSituacion.length ; i ++){
-            checksSituacion[itemSituacion[i]['value']] = false; 
+        for(int i = 0 ; i < itemCompetencia.length ; i ++){
+            checksCompetencia[itemCompetencia[i]['value']] = false; 
         }
-        for(int i = 0 ; i < itemProbSuelo.length ; i ++){
-            checksSuelo[itemProbSuelo[i]['value']] = false;
+        for(int i = 0 ; i < itemValoracion.length ; i ++){
+            checksValoracion[itemValoracion[i]['value']] = false;
         }
-        for(int i = 0 ; i < itemProbSombra.length ; i ++){
-            checksSombra[itemProbSombra[i]['value']] = false;
+        for(int i = 0 ; i < itemObsSuelo.length ; i ++){
+            checksObsSuelo[itemObsSuelo[i]['value']] = false;
         }
 
-        for(int i = 0 ; i < itemProbManejo.length ; i ++){
-            checksManejo[itemProbManejo[i]['value']] = false;
+        for(int i = 0 ; i < itemObsSombra.length ; i ++){
+            checksObsSombra[itemObsSombra[i]['value']] = false;
+        }
+        for(int i = 0 ; i < itemObsManejo.length ; i ++){
+            checksObsManejo[itemObsManejo[i]['value']] = false;
         }
         for(int i = 0 ; i < listSoluciones.length ; i ++){
             itemActividad[i] = [];
@@ -125,11 +128,10 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     Parcela parcela = snapshot.data[1];
                     
                     pageItem.add(_principalData(finca, parcela, plagaTest.id));
-                    pageItem.add(_plagasPrincipales());   
-                    pageItem.add(_situacionPlaga());   
-                    pageItem.add(_problemasSuelo());   
-                    pageItem.add(_problemasSombra());   
-                    pageItem.add(_problemasManejo());   
+                    pageItem.add(_hierbasProblematicas());   
+                    pageItem.add(_competeciaValoracion());  
+                    pageItem.add(_observaciones());   
+                    pageItem.add(_obsManejo());   
                     pageItem.add(_accionesMeses());   
                     pageItem.add(_botonsubmit(plagaTest.id));   
 
@@ -372,9 +374,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
             ),
         );
 
-    }
-    
-    
+    } 
 
     Widget _countPlagas(String idTest, int estacion){
         List<Widget> lisItem = List<Widget>();
@@ -415,8 +415,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         return Column(children:lisItem,);
     }
 
-
-    Widget _plagasPrincipales(){
+    Widget _hierbasProblematicas(){
         List<Widget> listHierbaProblema = List<Widget>();
 
         listHierbaProblema.add(
@@ -483,21 +482,21 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
     }
 
-    Widget _situacionPlaga(){
-        List<Widget> listSituacionPlaga = List<Widget>();
+    Widget _competeciaValoracion(){
+        List<Widget> listCompValora = List<Widget>();
 
-        listSituacionPlaga.add(
+        listCompValora.add(
             Column(
                 children: [
                     Container(
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "Situación de las plagas en la parcela",
+                                "Competencia entre hierbas y cacao",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -507,22 +506,20 @@ class _DesicionesPageState extends State<DesicionesPage> {
             
         );
         
-
-        for (var i = 0; i < itemSituacion.length; i++) {
-            String labelSituacion = itemSituacion.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
-            
-            
-            listSituacionPlaga.add(
+        for (var i = 0; i < itemCompetencia.length; i++) {
+            String labelSituacion = itemCompetencia.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+                        
+            listCompValora.add(
 
                 Container(
                     child: CheckboxListTile(
                         title: Text('$labelSituacion',
                             style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16),
                         ),
-                        value: checksSituacion[itemSituacion[i]['value']], 
+                        value: checksCompetencia[itemCompetencia[i]['value']], 
                         onChanged: (value) {
                             setState(() {
-                                checksSituacion[itemSituacion[i]['value']] = value;
+                                checksCompetencia[itemCompetencia[i]['value']] = value;
                                 //print(value);
                             });
                         },
@@ -531,43 +528,19 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     
             );
         }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listSituacionPlaga,)
-            ),
-        );
-    }
 
-    Widget _problemasSuelo(){
-        List<Widget> listProblemasSuelo = List<Widget>();
-
-        listProblemasSuelo.add(
+        listCompValora.add(
             Column(
                 children: [
                     Container(
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "¿Porqué hay problemas de plagas?  Suelo",
+                                "Valoración de cobertura del piso",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -577,20 +550,17 @@ class _DesicionesPageState extends State<DesicionesPage> {
             
         );
         
-
-        for (var i = 0; i < itemProbSuelo.length; i++) {
-            String labelProblemaSuelo = itemProbSuelo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
-            
-            
-            listProblemasSuelo.add(
+        for (var i = 0; i < itemValoracion.length; i++) {
+            String labelProblemaSuelo = itemValoracion.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            listCompValora.add(
 
                 Container(
                     child: CheckboxListTile(
                         title: Text('$labelProblemaSuelo'),
-                        value: checksSuelo[itemProbSuelo[i]['value']], 
+                        value: checksValoracion[itemValoracion[i]['value']], 
                         onChanged: (value) {
                             setState(() {
-                                checksSuelo[itemProbSuelo[i]['value']] = value;
+                                checksValoracion[itemValoracion[i]['value']] = value;
                                 //print(value);
                             });
                         },
@@ -599,7 +569,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     
             );
         }
-
+        
         return SingleChildScrollView(
             child: Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -616,26 +586,26 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 blurRadius: 17.0),
                         ],
                 ),
-                child: Column(children:listProblemasSuelo,)
+                child: Column(children:listCompValora,)
             ),
         );
     }
 
-    Widget _problemasSombra(){
-        List<Widget> listProblemasSombra = List<Widget>();
+    Widget _observaciones(){
+        List<Widget> listObservaciones = List<Widget>();
 
-        listProblemasSombra.add(
+        listObservaciones.add(
             Column(
                 children: [
                     Container(
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "¿Porqué hay problemas de plagas?  Sombra",
+                                "Observaciones de suelo",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -646,25 +616,66 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
         
 
-        for (var i = 0; i < itemProbSombra.length; i++) {
-            String labelProblemaSombra = itemProbSombra.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+        for (var i = 0; i < itemObsSuelo.length; i++) {
+            String labelProblemaSombra = itemObsSuelo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
-            
-            listProblemasSombra.add(
+            listObservaciones.add(
 
                 Container(
                     child: CheckboxListTile(
                         title: Text('$labelProblemaSombra'),
-                        value: checksSombra[itemProbSombra[i]['value']], 
+                        value: checksObsSuelo[itemObsSuelo[i]['value']], 
                         onChanged: (value) {
                             setState(() {
-                                checksSombra[itemProbSombra[i]['value']] = value;
+                                checksObsSuelo[itemObsSuelo[i]['value']] = value;
                                 //print(value);
                             });
                         },
                     ),
                 )                  
                     
+            );
+        }
+
+        listObservaciones.add(
+            Column(
+                children: [
+                    Container(
+                        child: Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 10),
+                            child: Text(
+                                "Observaciones de sombra",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme
+                                    .headline5
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
+                            ),
+                        )
+                    ),
+                    Divider(),
+                ],
+            )
+            
+        );
+        
+
+        for (var i = 0; i < itemObsSombra.length; i++) {
+            String labelProblemaManejo = itemObsSombra.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            
+            listObservaciones.add(
+
+                Container(
+                    child: CheckboxListTile(
+                        title: Text('$labelProblemaManejo'),
+                        value: checksObsSombra[itemObsSombra[i]['value']], 
+                        onChanged: (value) {
+                            setState(() {
+                                checksObsSombra[itemObsSombra[i]['value']] = value;
+                                //print(value);
+                            });
+                        },
+                    ),
+                )
             );
         }
         
@@ -684,26 +695,26 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 blurRadius: 17.0),
                         ],
                 ),
-                child: Column(children:listProblemasSombra,)
+                child: Column(children:listObservaciones,)
             ),
         );
     }
 
-    Widget _problemasManejo(){
-        List<Widget> listProblemasManejo = List<Widget>();
+    Widget _obsManejo(){
+        List<Widget> listObsManejo = List<Widget>();
 
-        listProblemasManejo.add(
+        listObsManejo.add(
             Column(
                 children: [
                     Container(
                         child: Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 10),
                             child: Text(
-                                "¿Porqué hay problemas de plagas?  Manejo",
+                                "Observaciones de manejo",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -714,19 +725,18 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
         
 
-        for (var i = 0; i < itemProbManejo.length; i++) {
-            String labelProblemaManejo = itemProbManejo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+        for (var i = 0; i < itemObsManejo.length; i++) {
+            String labelProblemaManejo = itemObsManejo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
-            
-            listProblemasManejo.add(
+            listObsManejo.add(
 
                 Container(
                     child: CheckboxListTile(
                         title: Text('$labelProblemaManejo'),
-                        value: checksManejo[itemProbManejo[i]['value']], 
+                        value: checksObsManejo[itemObsManejo[i]['value']], 
                         onChanged: (value) {
                             setState(() {
-                                checksManejo[itemProbManejo[i]['value']] = value;
+                                checksObsManejo[itemObsManejo[i]['value']] = value;
                                 //print(value);
                             });
                         },
@@ -751,7 +761,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 blurRadius: 17.0),
                         ],
                 ),
-                child: Column(children:listProblemasManejo,)
+                child: Column(children:listObsManejo,)
             ),
         );
     }
@@ -771,7 +781,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
                                     .headline5
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20)
+                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
                     ),
@@ -927,11 +937,12 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     void _submit(){
         setState(() {_guardando = true;});
-        _listaDecisiones(checksPrincipales, 1);
-        _listaDecisiones(checksSituacion, 2);
-        _listaDecisiones(checksSuelo, 3);
-        _listaDecisiones(checksSombra, 4);
-        _listaDecisiones(checksManejo, 5);
+        _listaDecisiones(checkhierbaProblema, 1);
+        _listaDecisiones(checksCompetencia, 2);
+        _listaDecisiones(checksValoracion, 3);
+        _listaDecisiones(checksObsSuelo, 4);
+        _listaDecisiones(checksObsSombra, 5);
+        _listaDecisiones(checksObsManejo, 6);
         _listaAcciones();
 
         listaDecisiones.forEach((decision) {
