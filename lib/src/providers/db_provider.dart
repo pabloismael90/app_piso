@@ -414,6 +414,34 @@ class DBProvider {
 
     }
 
+    Future<double> countCompetencia( String idTest, int idContacto) async {
+        final db = await database;
+        String query =  "SELECT COUNT(*) FROM TestPiso "+
+                        "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
+                        "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
+                        "WHERE idTest = '$idTest' AND idContacto IN (0,1,2,3,4,5) AND existe = 1";
+        int  res = Sqflite.firstIntValue(await db.rawQuery(query));
+
+        //print(res);
+        double value = res/60;
+        return value;
+
+    }
+
+    Future<double> countNoCompetencia( String idTest, int idContacto) async {
+        final db = await database;
+        String query =  "SELECT COUNT(*) FROM TestPiso "+
+                        "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
+                        "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
+                        "WHERE idTest = '$idTest' AND idContacto IN (6,7,8,9) AND existe = 1";
+        int  res = Sqflite.firstIntValue(await db.rawQuery(query));
+
+        //print(res);
+        double value = res/60;
+        return value;
+
+    }
+
 
 
 

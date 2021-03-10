@@ -55,6 +55,15 @@ class _ReportePageState extends State<ReportePage> {
         return countPalga*100;
     }
 
+    Future<double> _countTotalCompetencia(String idTest,int idPlaga) async{
+        double countPalga = await DBProvider.db.countCompetencia(idTest, idPlaga);        
+        return countPalga*100;
+    }
+    Future<double> _countTotalNoCompetencia(String idTest,int idPlaga) async{
+        double countPalga = await DBProvider.db.countNoCompetencia(idTest, idPlaga);        
+        return countPalga*100;
+    }
+
 
     
 
@@ -158,7 +167,7 @@ class _ReportePageState extends State<ReportePage> {
                                             child: Padding(
                                                 padding: EdgeInsets.only(top: 20, bottom: 10),
                                                 child: Text(
-                                                    "Porcentaje de plantas afectadas",
+                                                    "Porcentaje de cobertura",
                                                     textAlign: TextAlign.center,
                                                     style: Theme.of(context).textTheme
                                                         .headline5
@@ -184,8 +193,26 @@ class _ReportePageState extends State<ReportePage> {
                                             ),
                                             child: Column(
                                                 children: [
-                                                    _encabezadoTabla(),
+                                                    Row(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                            Expanded(
+                                                                child: Container(
+                                                                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                                                    child: Text('Tipos', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
+                                                                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                                                                ),
+                                                            ),
+                                                            
+                                                            Container(
+                                                                width: 100,
+                                                                child: Text('Cobertura', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
+                                                                        .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                                                            ),
+                                                        ],
+                                                    ),
                                                     Divider(),
+                                                    
                                                     _countPlagas(plagaid, 1),
                                                 ],
                                             ),
@@ -319,40 +346,6 @@ class _ReportePageState extends State<ReportePage> {
 
     }
 
-    Widget _encabezadoTabla(){
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-                Expanded(child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text('Caminatas', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
-                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),),
-                Container(
-                    width: 64,
-                    child: Text('1', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                    width: 64,
-                    child: Text('2', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-                Container(
-                    width: 64,
-                    child: Text('3', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
-                ),
-                Container(
-                    width: 64,
-                    child: Text('Total', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
-                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                ),
-            ],
-        );
-
-        
-    }
 
     Widget _countPlagas(String idTest, int caminata){
         List<Widget> lisItem = List<Widget>();
@@ -360,35 +353,131 @@ class _ReportePageState extends State<ReportePage> {
         for (var i = 0; i < itemEnContato.length; i++) {
             String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
-            lisItem.add(
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                        Expanded(child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
-                        ),),
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentTotal(idTest, idplga),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
-
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
+            
+            
+            if (idplga == 5) {
+                lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
+            }else if(idplga == 9) {
+                lisItem.add(_countNoCompetencia(idTest,idplga, labelPlaga));
+            }else{
+                
+                lisItem.add(
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                            Expanded(
+                                child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                                ),
                             ),
-                        ),
+                            Container(
+                                width: 50,
+                                child: FutureBuilder(
+                                    future: _countPercentTotal(idTest, idplga),
+                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                        if (!snapshot.hasData) {
+                                            return textFalse;
+                                        }
+
+                                        return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                                    },
+                                ),
+                            ),
+                            Container(width: 50,),
+                            
+                        ],
+                    )
+                );
+            }
                         
-                    ],
-                )
-            );
             lisItem.add(Divider());
         }
         return Column(children:lisItem,);
     }
+
+    Widget _countCompetencia(String idTest, int idplga, String labelPlaga){
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+                Expanded(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                    ),
+                ),
+                Container(
+                    width: 50,
+                    child: FutureBuilder(
+                        future: _countPercentTotal(idTest, idplga),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
+
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                        },
+                    ),
+                ),
+                Container(
+                    width: 50,
+                    child: FutureBuilder(
+                        future: _countTotalCompetencia(idTest, idplga),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
+
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                        },
+                    ),
+                ),
+                
+            ],
+        );
+    }
+
+    Widget _countNoCompetencia(String idTest, int idplga, String labelPlaga){
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+                Expanded(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                    ),
+                ),
+                Container(
+                    width: 50,
+                    child: FutureBuilder(
+                        future: _countPercentTotal(idTest, idplga),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
+
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                        },
+                    ),
+                ),
+                Container(
+                    width: 50,
+                    child: FutureBuilder(
+                        future: _countTotalNoCompetencia(idTest, idplga),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
+
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                        },
+                    ),
+                ),
+                
+            ],
+        );
+    }
+
 
 
     Widget _hierbasProblematicas(List<Decisiones> decisionesList){

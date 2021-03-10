@@ -77,6 +77,16 @@ class _AgregarTestState extends State<AgregarTest> {
                                 children: [
                                     TitulosPages(titulo: 'Toma de datos'),
                                     Divider(),
+                                    Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                        child:Text(
+                                            'Método Punta de zapato',
+                                            style: Theme.of(context).textTheme
+                                                .headline6
+                                                .copyWith(fontSize: 16)
+                                        ),
+                                    ),
+                                    Divider(),
                                     Container(
                                         child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -85,7 +95,7 @@ class _AgregarTestState extends State<AgregarTest> {
                                                 Padding(
                                                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                                                     child:Text(
-                                                        '3 Estaciones',
+                                                        '3 Caminatas',
                                                         style: Theme.of(context).textTheme
                                                             .headline6
                                                             .copyWith(fontSize: 16)
@@ -94,7 +104,7 @@ class _AgregarTestState extends State<AgregarTest> {
                                                 Padding(
                                                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                                                     child:Text(
-                                                        '10 Plantas por estaciones',
+                                                        '20 Pasos por caminata',
                                                         style: Theme.of(context).textTheme
                                                             .headline6
                                                             .copyWith(fontSize: 16)
@@ -104,6 +114,7 @@ class _AgregarTestState extends State<AgregarTest> {
                                         )
                                     ),
                                     Divider(),
+                                    
                                     Container(
                                         padding: EdgeInsets.all(15.0),
                                         child: Form(

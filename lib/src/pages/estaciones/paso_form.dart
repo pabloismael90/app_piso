@@ -105,9 +105,9 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                     value: (radios[itemEnContato[idPlaga]['value']] == '1') ? true : false,
                     onChanged: (value){
                         setState(() {
-                            //print(value);
+                            radioGroupKeys();
                             radios[itemEnContato[idPlaga]['value']] = value ? '1' : '2';
-                            print(radios[itemEnContato[idPlaga]['value']]);
+                            
                         });
                     }
 
@@ -145,18 +145,28 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             itemPiso.id = uuid.v1();
             itemPiso.idPaso = paso.id;
             itemPiso.idContacto = int.parse(key);
+            
             itemPiso.existe = int.parse(value);
-
-
             listaPlagas.add(itemPiso);
         });
         
     }
 
     void _submit(){
+
+        variableVacias = 0;
+        radios.forEach((key, value) {
+            if (value == '2') {
+                variableVacias ++;
+            } 
+        });
+        if  ( variableVacias ==  radios.length){
+            mostrarSnackbar(variableVacias);
+            return null;
+        }
         
         setState(() {_guardando = true;});
-
+        
         
         if(paso.id == null){
             paso.id =  uuid.v1();
@@ -165,6 +175,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
 
             listaPlagas.forEach((item) {
                 DBProvider.db.nuevoEnContacto(item);
+                
             });
 
         }
@@ -176,6 +187,16 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         
     }
 
+    void mostrarSnackbar(int variableVacias){
+        final snackbar = SnackBar(
+            content: Text('Campo Vacio, Favor seleccione un item',
+                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+            ),
+            duration: Duration(seconds: 2),
+        );
+        setState(() {_guardando = false;});
+        scaffoldKey.currentState.showSnackBar(snackbar);
+    }
 
    
 
