@@ -356,11 +356,13 @@ class _ReportePageState extends State<ReportePage> {
             
             
             if (idplga == 5) {
-                lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
-            }else if(idplga == 9) {
+                   lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
+            }else if(idplga == 9){
                 lisItem.add(_countNoCompetencia(idTest,idplga, labelPlaga));
+            }else if(idplga == 10){
+                lisItem.add(_sueloDesnudo(idTest,idplga, labelPlaga));
             }else{
-                
+             
                 lisItem.add(
                     Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -368,11 +370,13 @@ class _ReportePageState extends State<ReportePage> {
                             Expanded(
                                 child: Container(
                                     padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                                    child: Text('$labelPlaga', 
+                                    textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: (i <= 5) ? Colors.red : Colors.green[900]) ,),
                                 ),
                             ),
                             Container(
                                 width: 50,
+                                
                                 child: FutureBuilder(
                                     future: _countPercentTotal(idTest, idplga),
                                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -380,7 +384,8 @@ class _ReportePageState extends State<ReportePage> {
                                             return textFalse;
                                         }
 
-                                        return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                                        return Text('${snapshot.data.toStringAsFixed(2)}%', 
+                                        textAlign: TextAlign.center, style: (i <= 5) ? TextStyle(color: Colors.red) : TextStyle(color: Colors.green[900]),);
                                     },
                                 ),
                             ),
@@ -403,7 +408,7 @@ class _ReportePageState extends State<ReportePage> {
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red) ,),
                     ),
                 ),
                 Container(
@@ -415,7 +420,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.red));
                         },
                     ),
                 ),
@@ -428,7 +433,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.red));
                         },
                     ),
                 ),
@@ -444,7 +449,7 @@ class _ReportePageState extends State<ReportePage> {
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]) ,),
                     ),
                 ),
                 Container(
@@ -456,7 +461,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.green[900]));
                         },
                     ),
                 ),
@@ -469,10 +474,39 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.green[900]));
                         },
                     ),
                 ),
+                
+            ],
+        );
+    }
+
+    Widget _sueloDesnudo(String idTest, int idplga, String labelPlaga){
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+                Expanded(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.brown) ,),
+                    ),
+                ),
+                Container(
+                    width: 50,
+                    child: FutureBuilder(
+                        future: _countPercentTotal(idTest, idplga),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
+
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.brown));
+                        },
+                    ),
+                ),
+                Container(width: 50,),
                 
             ],
         );
