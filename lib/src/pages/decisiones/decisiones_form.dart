@@ -415,9 +415,11 @@ class _DesicionesPageState extends State<DesicionesPage> {
             int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
             
             if (idplga == 5) {
-                lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
-            }else if(idplga == 9) {
+                   lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
+            }else if(idplga == 9){
                 lisItem.add(_countNoCompetencia(idTest,idplga, labelPlaga));
+            }else if(idplga == 10){
+                lisItem.add(_sueloDesnudo(idTest,idplga, labelPlaga));
             }else{
                 
                 lisItem.add(
@@ -427,7 +429,8 @@ class _DesicionesPageState extends State<DesicionesPage> {
                             Expanded(
                                 child: Container(
                                     padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                                    child: Text('$labelPlaga', 
+                                    textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: (i <= 5) ? Colors.red : Colors.green[900]) ,),
                                 ),
                             ),
                             Container(
@@ -439,7 +442,8 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                             return textFalse;
                                         }
 
-                                        return Text('${snapshot.data.toStringAsFixed(1)}%', textAlign: TextAlign.center);
+                                        return Text('${snapshot.data.toStringAsFixed(2)}%', 
+                                        textAlign: TextAlign.center, style: (i <= 5) ? TextStyle(color: Colors.red) : TextStyle(color: Colors.green[900]),);
                                     },
                                 ),
                             ),
@@ -462,7 +466,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red) ,),
                     ),
                 ),
                 Container(
@@ -474,7 +478,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(1)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.red));
                         },
                     ),
                 ),
@@ -487,14 +491,13 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(1)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.red));
                         },
                     ),
                 ),
                 
             ],
         );
-
     }
 
     Widget _countNoCompetencia(String idTest, int idplga, String labelPlaga){
@@ -504,7 +507,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                 Expanded(
                     child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]) ,),
                     ),
                 ),
                 Container(
@@ -516,7 +519,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(1)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.green[900]));
                         },
                     ),
                 ),
@@ -529,7 +532,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(1)}%', textAlign: TextAlign.center);
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.green[900]));
                         },
                     ),
                 ),
@@ -537,6 +540,36 @@ class _DesicionesPageState extends State<DesicionesPage> {
             ],
         );
     }
+
+    Widget _sueloDesnudo(String idTest, int idplga, String labelPlaga){
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+                Expanded(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.brown) ,),
+                    ),
+                ),
+                Container(
+                    width: 50,
+                    child: FutureBuilder(
+                        future: _countPercentTotal(idTest, idplga),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
+
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.brown));
+                        },
+                    ),
+                ),
+                Container(width: 50,),
+                
+            ],
+        );
+    }
+
 
     Widget _hierbasProblematicas(){
         List<Widget> listHierbaProblema = List<Widget>();
