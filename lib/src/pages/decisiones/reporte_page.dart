@@ -385,7 +385,7 @@ class _ReportePageState extends State<ReportePage> {
                                         }
 
                                         return Text('${snapshot.data.toStringAsFixed(2)}%', 
-                                        textAlign: TextAlign.center, style: (i <= 5) ? TextStyle(color: Colors.red) : TextStyle(color: Colors.green[900]),);
+                                        textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: (i <= 5) ? Colors.red : Colors.green[900]));
                                     },
                                 ),
                             ),
@@ -420,7 +420,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.red));
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red));
                         },
                     ),
                 ),
@@ -433,7 +433,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.red));
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red));
                         },
                     ),
                 ),
@@ -461,7 +461,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.green[900]));
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]));
                         },
                     ),
                 ),
@@ -474,7 +474,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.green[900]));
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]));
                         },
                     ),
                 ),
@@ -502,7 +502,7 @@ class _ReportePageState extends State<ReportePage> {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(color: Colors.brown));
+                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.brown));
                         },
                     ),
                 ),
