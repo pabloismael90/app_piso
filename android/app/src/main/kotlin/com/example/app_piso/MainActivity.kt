@@ -1,4 +1,4 @@
-package ni.org.simas.app_piso
+package org.rikolto.latinoamerica.app_piso
 
 import io.flutter.embedding.android.FlutterActivity
 
