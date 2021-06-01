@@ -1,11 +1,11 @@
 class Finca {
     Finca({
         this.id,
-        this.nombreFinca = '',
-        this.nombreProductor = '',
-        this.areaFinca = 0.0,
+        this.nombreFinca,
+        this.nombreProductor,
+        this.areaFinca,
         this.tipoMedida = 1,
-        this.nombreTecnico = '',
+        this.nombreTecnico,
     });
 
     String id;

@@ -36,8 +36,6 @@ class DBProvider {
 
         final path = join( documentsDirectory.path, 'apppiso.db' );
 
-        print(path);
-
         return await openDatabase(
             path,
             version: 1,

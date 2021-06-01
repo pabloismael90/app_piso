@@ -154,15 +154,16 @@ class _AgregarParcelaState extends State<AgregarParcela> {
 
                 double sumaParcelas = 0.0;
                 double valorsuma = 0.0;             
+                double areaParcela = parcela.areaLote == null ? 0 : parcela.areaLote;         
 
                 for (var item in listParcela) {
                     sumaParcelas = sumaParcelas+item.areaLote;
                 }
                 
-                sumaParcelas = sumaParcelas - parcela.areaLote;
+                sumaParcelas = sumaParcelas - areaParcela;
 
                 return TextFormField(
-                    initialValue: parcela.areaLote.toString(),
+                    initialValue: parcela.areaLote == null ? '' : parcela.areaLote.toString(),
                     keyboardType: TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
                         labelText: 'Área de la parcela ($labelMedida)'
@@ -215,7 +216,7 @@ class _AgregarParcelaState extends State<AgregarParcela> {
     Widget _numeroPlanta(String labelMedida){
 
         return TextFormField(
-            initialValue: parcela.numeroPlanta.toString(),
+            initialValue: parcela.numeroPlanta == null ? '' : parcela.numeroPlanta.toString(),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly

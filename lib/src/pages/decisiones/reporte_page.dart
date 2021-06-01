@@ -194,12 +194,12 @@ class _ReportePageState extends State<ReportePage> {
                                             child: Column(
                                                 children: [
                                                     Row(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                        mainAxisAlignment: MainAxisAlignment.end,
                                                         children: [
                                                             Expanded(
                                                                 child: Container(
                                                                     padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                                                    child: Text('Tipos', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
+                                                                    child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
                                                                                             .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                                                                 ),
                                                             ),
@@ -212,7 +212,6 @@ class _ReportePageState extends State<ReportePage> {
                                                         ],
                                                     ),
                                                     Divider(),
-                                                    
                                                     _countPlagas(plagaid, 1),
                                                 ],
                                             ),
@@ -346,6 +345,20 @@ class _ReportePageState extends State<ReportePage> {
 
     }
 
+    Widget _titulosTabla(String titulo){
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(titulo, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
+                          .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                ),
+                Divider()
+            ],
+        );
+    }
+
 
     Widget _countPlagas(String idTest, int caminata){
         List<Widget> lisItem = List<Widget>();
@@ -355,6 +368,7 @@ class _ReportePageState extends State<ReportePage> {
             int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
             
             
+
             if (idplga == 5) {
                    lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
             }else if(idplga == 9){
@@ -362,7 +376,17 @@ class _ReportePageState extends State<ReportePage> {
             }else if(idplga == 10){
                 lisItem.add(_sueloDesnudo(idTest,idplga, labelPlaga));
             }else{
-             
+                if (idplga == 0) {
+                    lisItem.add(_titulosTabla('Maleza potencialmente dañinos'));
+                }
+                if (idplga == 6) {
+                    lisItem.add(_titulosTabla('Malezas de cobertura nobles'));
+                }
+                if (idplga == 8) {
+                    lisItem.add(_titulosTabla('Mulch de maleza'));
+                }
+
+
                 lisItem.add(
                     Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -400,6 +424,7 @@ class _ReportePageState extends State<ReportePage> {
         }
         return Column(children:lisItem,);
     }
+    
 
     Widget _countCompetencia(String idTest, int idplga, String labelPlaga){
         return Row(

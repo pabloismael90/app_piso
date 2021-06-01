@@ -132,6 +132,7 @@ class FincasBloc {
     borrarPaso( Paso paso) async{
         await DBProvider.db.deletePaso(paso.id);
         obtenerPasoIdTest(paso.idTest, paso.caminata);
+        obtenerPasos(paso.idTest);
     }
 
 

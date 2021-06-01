@@ -132,11 +132,11 @@ class _AgregarFincaState extends State<AgregarFinca> {
     Widget _areaFinca(){
 
         return TextFormField(
-            initialValue: finca.areaFinca.toString(),
+            initialValue: finca.areaFinca == null ? '' : finca.areaFinca.toString(),
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
                 labelText: 'Área de la finca',
-                hintText: 'ejem: 200.0',
+                hintText: 'ejem: 2',
                 
             ),
             validator: (value) {

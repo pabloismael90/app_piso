@@ -249,13 +249,13 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                     ),
                                                     child: Column(
                                                         children: [
-                                                            Row(
+                                                             Row(
                                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                                 children: [
                                                                     Expanded(
                                                                         child: Container(
                                                                             padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                                                            child: Text('Tipos', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
+                                                                            child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
                                                                                                     .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                                                                         ),
                                                                     ),
@@ -407,13 +407,31 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     } 
 
-    Widget _countPlagas(String idTest, int estacion){
+    Widget _titulosTabla(String titulo){
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(titulo, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
+                          .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                ),
+                Divider()
+            ],
+        );
+    }
+    
+    
+    
+    Widget _countPlagas(String idTest, int caminata){
         List<Widget> lisItem = List<Widget>();
-        
+
         for (var i = 0; i < itemEnContato.length; i++) {
             String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
             
+            
+
             if (idplga == 5) {
                    lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
             }else if(idplga == 9){
@@ -421,7 +439,17 @@ class _DesicionesPageState extends State<DesicionesPage> {
             }else if(idplga == 10){
                 lisItem.add(_sueloDesnudo(idTest,idplga, labelPlaga));
             }else{
-                
+                if (idplga == 0) {
+                    lisItem.add(_titulosTabla('Maleza potencialmente dañinos'));
+                }
+                if (idplga == 6) {
+                    lisItem.add(_titulosTabla('Malezas de cobertura nobles'));
+                }
+                if (idplga == 8) {
+                    lisItem.add(_titulosTabla('Mulch de maleza'));
+                }
+
+
                 lisItem.add(
                     Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -435,6 +463,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                             ),
                             Container(
                                 width: 50,
+                                
                                 child: FutureBuilder(
                                     future: _countPercentTotal(idTest, idplga),
                                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -453,11 +482,12 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     )
                 );
             }
-
+                        
             lisItem.add(Divider());
         }
         return Column(children:lisItem,);
     }
+    
 
     Widget _countCompetencia(String idTest, int idplga, String labelPlaga){
         return Row(
