@@ -165,7 +165,7 @@ class _PasoPageState extends State<PasoPage> {
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                                Container(
+                                Flexible(
                                     child: Text('Pasos: $value / 20',
                                         style: Theme.of(context).textTheme
                                                 .headline6
@@ -188,7 +188,7 @@ class _PasoPageState extends State<PasoPage> {
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                                Container(
+                                Flexible(
                                     child: Text('Pisos : $value / 20',
                                         style: Theme.of(context).textTheme
                                                 .headline6
