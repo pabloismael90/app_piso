@@ -6,9 +6,9 @@ class Paso {
         
     });
 
-    String id;
-    String idTest;
-    int caminata;
+    String? id;
+    String? idTest;
+    int? caminata;
 
     factory Paso.fromJson(Map<String, dynamic> json) => Paso(
         id: json["id"],

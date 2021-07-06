@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class CaminatasPage extends StatefulWidget {
-    const CaminatasPage({Key key}) : super(key: key);
+    const CaminatasPage({Key? key}) : super(key: key);
 
   @override
   _CaminatasPageState createState() => _CaminatasPageState();
@@ -22,8 +22,8 @@ class _CaminatasPageState extends State<CaminatasPage> {
     final fincasBloc = new FincasBloc();
 
     Future _getdataFinca(TestPiso textPiso) async{
-        Finca finca = await DBProvider.db.getFincaId(textPiso.idFinca);
-        Parcela parcela = await DBProvider.db.getParcelaId(textPiso.idLote);
+        Finca? finca = await DBProvider.db.getFincaId(textPiso.idFinca);
+        Parcela? parcela = await DBProvider.db.getParcelaId(textPiso.idLote);
         List<Decisiones> desiciones = await DBProvider.db.getDecisionesIdTest(textPiso.id);
         
         return [finca, parcela, desiciones];
@@ -32,7 +32,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
     @override
     Widget build(BuildContext context) {
         
-        TestPiso piso = ModalRoute.of(context).settings.arguments;
+        TestPiso piso = ModalRoute.of(context)!.settings.arguments as TestPiso;
         fincasBloc.obtenerPasos(piso.id);
         
 
@@ -266,7 +266,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
                                     
                                     label: Text('Toma de decisiones',
                                         style: Theme.of(context).textTheme
-                                            .headline6
+                                            .headline6!
                                             .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)
                                     ),
                                     padding:EdgeInsets.all(13),
@@ -287,7 +287,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
                             
                                 label: Text('Consultar decisiones',
                                     style: Theme.of(context).textTheme
-                                        .headline6
+                                        .headline6!
                                         .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)
                                 ),
                                 padding:EdgeInsets.all(13),
@@ -309,7 +309,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
                     "Complete las caminatas",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme
-                        .headline5
+                        .headline5!
                         .copyWith(fontWeight: FontWeight.w900, color: kRedColor, fontSize: 22)
                 ),
             ),

@@ -6,10 +6,10 @@ class EnContacto {
         this.existe = 1,
     });
 
-    String id;
-    String idPaso;
-    int idContacto;
-    int existe;
+    String? id;
+    String? idPaso;
+    int? idContacto;
+    int? existe;
 
     factory EnContacto.fromJson(Map<String, dynamic> json) => EnContacto(
         id: json["id"],

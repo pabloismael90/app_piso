@@ -58,7 +58,7 @@ class FincasBloc {
         obtenerFincas();
     }
 
-    borrarFinca( String id ) async {
+    borrarFinca( String? id ) async {
         await DBProvider.db.deleteFinca(id);
         obtenerFincas();
     }
@@ -73,21 +73,21 @@ class FincasBloc {
         _parcelasController.sink.add( await DBProvider.db.getTodasParcelas() );
     }
     
-    obtenerParcelasIdFinca(String idFinca) async {
+    obtenerParcelasIdFinca(String? idFinca) async {
         _parcelasController.sink.add( await DBProvider.db.getTodasParcelasIdFinca(idFinca) );
     }
 
-    addParcela( Parcela parcela, String idFinca ) async{
+    addParcela( Parcela parcela, String? idFinca ) async{
         await DBProvider.db.nuevoParcela(parcela);
         obtenerParcelasIdFinca(idFinca);
     }
 
-    actualizarParcela( Parcela parcela, String idFinca ) async{
+    actualizarParcela( Parcela parcela, String? idFinca ) async{
         await DBProvider.db.updateParcela(parcela);
         obtenerParcelasIdFinca(idFinca);
     }
     
-    borrarParcela( String id ) async {
+    borrarParcela( String? id ) async {
         await DBProvider.db.deleteParcela(id);
         obtenerParcelas();
     }
@@ -107,23 +107,23 @@ class FincasBloc {
         //obtenerParcelasIdFinca(idFinca);
     }
 
-    borrarTestPiso( String idTest) async{
+    borrarTestPiso( String? idTest) async{
         await DBProvider.db.deleteTestPiso(idTest);
         obtenerPisos();
     }
 
 
     //Pasos
-    obtenerPasos(String idTest) async {
+    obtenerPasos(String? idTest) async {
         _countPasoControl.sink.add( await DBProvider.db.getTodasPasoIdTest(idTest) );  
     }
 
     
-    obtenerPasoIdTest(String idTest, int estacion) async {
+    obtenerPasoIdTest(String? idTest, int? estacion) async {
         _pasoController.sink.add( await DBProvider.db.getTodasPasosIdTest(idTest, estacion));
     }
     
-    addPlata( Paso nuevaPaso, String idTest, int estacion) async{
+    addPlata( Paso nuevaPaso, String? idTest, int? estacion) async{
         await DBProvider.db.nuevoPaso(nuevaPaso);
         obtenerPasoIdTest(idTest, estacion);
         obtenerPasos(idTest);
@@ -137,7 +137,7 @@ class FincasBloc {
 
 
     //deciones
-    obtenerDecisiones(String idTest) async {
+    obtenerDecisiones(String? idTest) async {
         _decisionesControl.sink.add( await DBProvider.db.getDecisionesIdTest(idTest) );
     }
 
@@ -147,14 +147,14 @@ class FincasBloc {
 
     //Cerrar stream
     dispose() {
-        _fincasController?.close();
-        _parcelasController?.close();
-        _fincasSelectControl?.close();
-        _parcelaSelectControl?.close();
-        _pisoController?.close();
-        _pasoController?.close();
-        _countPasoControl?.close();
-        _decisionesControl?.close();
+        _fincasController.close();
+        _parcelasController.close();
+        _fincasSelectControl.close();
+        _parcelaSelectControl.close();
+        _pisoController.close();
+        _pasoController.close();
+        _countPasoControl.close();
+        _decisionesControl.close();
     }
 
     

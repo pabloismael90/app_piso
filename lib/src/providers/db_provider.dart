@@ -17,12 +17,12 @@ export 'package:app_piso/src/models/parcela_model.dart';
 
 class DBProvider {
 
-    static Database _database; 
+    static Database? _database; 
     static final DBProvider db = DBProvider._();
 
     DBProvider._();
 
-    Future<Database> get database async {
+    Future<Database?> get database async {
 
         if ( _database != null ) return _database;
 
@@ -131,44 +131,44 @@ class DBProvider {
 
     //ingresar Registros
     nuevoFinca( Finca nuevaFinca ) async {
-        final db  = await database;
-        final res = await db.insert('Finca',  nuevaFinca.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('Finca',  nuevaFinca.toJson() );
         return res;
     }
 
     nuevoParcela( Parcela nuevaParcela ) async {
-        final db  = await database;
-        final res = await db.insert('Parcela',  nuevaParcela.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('Parcela',  nuevaParcela.toJson() );
         return res;
     }
 
     nuevoTestPiso( TestPiso nuevaTestPiso ) async {
-        final db  = await database;
-        final res = await db.insert('TestPiso',  nuevaTestPiso.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('TestPiso',  nuevaTestPiso.toJson() );
         return res;
     }
 
     nuevoPaso( Paso nuevaPaso ) async {
-        final db  = await database;
-        final res = await db.insert('Paso',  nuevaPaso.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('Paso',  nuevaPaso.toJson() );
         return res;
     }
 
     nuevoEnContacto( EnContacto enContacto ) async {
-        final db  = await database;
-        final res = await db.insert('EnContacto',  enContacto.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('EnContacto',  enContacto.toJson() );
         return res;
     }
 
     nuevaDecision( Decisiones decisiones ) async {
-        final db  = await database;
-        final res = await db.insert('Decisiones',  decisiones.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('Decisiones',  decisiones.toJson() );
         return res;
     }
 
     nuevaAccion( Acciones acciones ) async {
-        final db  = await database;
-        final res = await db.insert('Acciones',  acciones.toJson() );
+        final db  = await (database);
+        final res = await db!.insert('Acciones',  acciones.toJson() );
         return res;
     }
 
@@ -177,8 +177,8 @@ class DBProvider {
     //Obtener registros
     Future<List<Finca>> getTodasFincas() async {
 
-        final db  = await database;
-        final res = await db.query('Finca');
+        final db  = await (database);
+        final res = await db!.query('Finca');
 
         List<Finca> list = res.isNotEmpty 
                                 ? res.map( (c) => Finca.fromJson(c) ).toList()
@@ -188,8 +188,8 @@ class DBProvider {
 
     Future<List<Parcela>> getTodasParcelas() async {
 
-        final db  = await database;
-        final res = await db.query('Parcela');
+        final db  = await (database);
+        final res = await db!.query('Parcela');
 
         List<Parcela> list = res.isNotEmpty 
                                 ? res.map( (c) => Parcela.fromJson(c) ).toList()
@@ -199,8 +199,8 @@ class DBProvider {
 
     Future<List<TestPiso>> getTodasTestPiso() async {
 
-        final db  = await database;
-        final res = await db.query('TestPiso');
+        final db  = await (database);
+        final res = await db!.query('TestPiso');
 
         List<TestPiso> list = res.isNotEmpty 
                                 ? res.map( (c) => TestPiso.fromJson(c) ).toList()
@@ -210,8 +210,8 @@ class DBProvider {
 
     Future<List<Paso>> getTodasPasos() async {
 
-        final db  = await database;
-        final res = await db.query('Paso');
+        final db  = await (database);
+        final res = await db!.query('Paso');
 
         List<Paso> list = res.isNotEmpty 
                                 ? res.map( (c) => Paso.fromJson(c) ).toList()
@@ -219,10 +219,10 @@ class DBProvider {
         return list;
     }
 
-    Future<int> countPaso(String idTest,  int caminata ) async {
+    Future<int?> countPaso(String idTest,  int caminata ) async {
 
-        final db = await database;
-        int count = Sqflite.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM Paso WHERE idTest = '$idTest' AND caminata = '$caminata'"));
+        final db = await (database);
+        int? count = Sqflite.firstIntValue(await db!.rawQuery("SELECT COUNT(*) FROM Paso WHERE idTest = '$idTest' AND caminata = '$caminata'"));
         return count;
     
 
@@ -230,8 +230,8 @@ class DBProvider {
 
     Future<List<Decisiones>> getTodasDesiciones() async {
 
-        final db  = await database;
-        final res = await db.query('Decisiones');
+        final db  = await (database);
+        final res = await db!.query('Decisiones');
 
         List<Decisiones> list = res.isNotEmpty 
                                 ? res.map( (c) => Decisiones.fromJson(c) ).toList()
@@ -241,8 +241,8 @@ class DBProvider {
 
     Future<List<Acciones>> getTodasAcciones() async {
 
-        final db  = await database;
-        final res = await db.rawQuery('SELECT DISTINCT idTest FROM Acciones');
+        final db  = await (database);
+        final res = await db!.rawQuery('SELECT DISTINCT idTest FROM Acciones');
 
         List<Acciones> list = res.isNotEmpty 
                                 ? res.map( (c) => Acciones.fromJson(c) ).toList()
@@ -254,28 +254,28 @@ class DBProvider {
     
     
     //REgistros por id
-    Future<Finca> getFincaId(String id) async{
-        final db = await database;
-        final res = await db.query('Finca', where: 'id = ?', whereArgs: [id]);
+    Future<Finca?> getFincaId(String? id) async{
+        final db = await (database);
+        final res = await db!.query('Finca', where: 'id = ?', whereArgs: [id]);
         return res.isNotEmpty ? Finca.fromJson(res.first) : null;
     }
 
-    Future<Parcela> getParcelaId(String id) async{
-        final db = await database;
-        final res = await db.query('Parcela', where: 'id = ?', whereArgs: [id]);
+    Future<Parcela?> getParcelaId(String? id) async{
+        final db = await (database);
+        final res = await db!.query('Parcela', where: 'id = ?', whereArgs: [id]);
         return res.isNotEmpty ? Parcela.fromJson(res.first) : null;
     }
 
-    Future<TestPiso> getTestId(String id) async{
-        final db = await database;
-        final res = await db.query('TestPiso', where: 'id = ?', whereArgs: [id]);
+    Future<TestPiso?> getTestId(String? id) async{
+        final db = await (database);
+        final res = await db!.query('TestPiso', where: 'id = ?', whereArgs: [id]);
         return res.isNotEmpty ? TestPiso.fromJson(res.first) : null;
     }
 
-    Future<List<Parcela>> getTodasParcelasIdFinca(String idFinca) async{
+    Future<List<Parcela>> getTodasParcelasIdFinca(String? idFinca) async{
 
-        final db = await database;
-        final res = await db.query('Parcela', where: 'idFinca = ?', whereArgs: [idFinca]);
+        final db = await (database);
+        final res = await db!.query('Parcela', where: 'idFinca = ?', whereArgs: [idFinca]);
         List<Parcela> list = res.isNotEmpty 
                     ? res.map( (c) => Parcela.fromJson(c) ).toList() 
                     : [];
@@ -283,19 +283,19 @@ class DBProvider {
         return list;            
     }
 
-    Future<List<Paso>> getTodasPasoIdTest(String idTest) async{
-        final db = await database;
-        final res = await db.query('Paso', where: 'idTest = ?', whereArgs: [idTest]);
+    Future<List<Paso>> getTodasPasoIdTest(String? idTest) async{
+        final db = await (database);
+        final res = await db!.query('Paso', where: 'idTest = ?', whereArgs: [idTest]);
         List<Paso> list = res.isNotEmpty 
                     ? res.map( (c) => Paso.fromJson(c) ).toList() 
                     : [];
         return list;            
     }
    
-    Future<List<Paso>> getTodasPasosIdTest(String idTest, int caminata) async{
-        final db = await database;
-        final res = await db.rawQuery("SELECT * FROM Paso WHERE idTest = '$idTest' AND caminata = '$caminata'");
-        //final res = await db.query('Paso', where: 'idTest = ?', whereArgs: [idTest]);
+    Future<List<Paso>> getTodasPasosIdTest(String? idTest, int? caminata) async{
+        final db = await (database);
+        final res = await db!.rawQuery("SELECT * FROM Paso WHERE idTest = '$idTest' AND caminata = '$caminata'");
+        //final res = await db!.query('Paso', where: 'idTest = ?', whereArgs: [idTest]);
         List<Paso> list = res.isNotEmpty 
                     ? res.map( (c) => Paso.fromJson(c) ).toList() 
                     : [];
@@ -305,8 +305,8 @@ class DBProvider {
 
     Future<List<EnContacto>> getEnContactoIdPaso(String idPaso) async {
 
-        final db  = await database;
-        final res = await db.rawQuery("SELECT * FROM EnContacto WHERE idPaso = '$idPaso'");
+        final db  = await (database);
+        final res = await db!.rawQuery("SELECT * FROM EnContacto WHERE idPaso = '$idPaso'");
 
         List<EnContacto> list = res.isNotEmpty 
                     ? res.map( (c) => EnContacto.fromJson(c) ).toList() 
@@ -319,25 +319,25 @@ class DBProvider {
         
     //     final db  = await database;
     //     String query = "SELECT existe FROM ExistePlaga WHERE idPaso = '$idPaso' AND idPlaga = '$idplaga'";
-    //     final  res = await db.rawQuery(query);
+    //     final  res = await db!.rawQuery(query);
     //     int value = res.isNotEmpty ? res[0]['existe'] : -1;
     //     //print(value);
 
     //     return value;
     // }
 
-    Future<List<Decisiones>> getDecisionesIdTest(String idTest) async{
-        final db = await database;
-        final res = await db.query('Decisiones', where: 'idTest = ?', whereArgs: [idTest]);
+    Future<List<Decisiones>> getDecisionesIdTest(String? idTest) async{
+        final db = await (database);
+        final res = await db!.query('Decisiones', where: 'idTest = ?', whereArgs: [idTest]);
         List<Decisiones> list = res.isNotEmpty 
                                 ? res.map( (c) => Decisiones.fromJson(c) ).toList()
                                 : [];
         return list;
     }
 
-    Future<List<Acciones>> getAccionesIdTest(String idTest) async{
-        final db = await database;
-        final res = await db.query('Acciones', where: 'idTest = ?', whereArgs: [idTest]);
+    Future<List<Acciones>> getAccionesIdTest(String? idTest) async{
+        final db = await (database);
+        final res = await db!.query('Acciones', where: 'idTest = ?', whereArgs: [idTest]);
         List<Acciones> list = res.isNotEmpty 
                                 ? res.map( (c) => Acciones.fromJson(c) ).toList()
                                 : [];
@@ -348,8 +348,8 @@ class DBProvider {
     //List Select
     Future<List<Map<String, dynamic>>> getSelectFinca() async {
        
-        final db  = await database;
-        final res = await db.rawQuery(
+        final db  = await (database);
+        final res = await db!.rawQuery(
             "SELECT id AS value, nombreFinca AS label FROM Finca"
         );
         List<Map<String, dynamic>> list = res.isNotEmpty ? res : [];
@@ -360,8 +360,8 @@ class DBProvider {
     }
     
     Future<List<Map<String, dynamic>>> getSelectParcelasIdFinca(String idFinca) async{
-        final db = await database;
-        final res = await db.rawQuery(
+        final db = await (database);
+        final res = await db!.rawQuery(
             "SELECT id AS value, nombreLote AS label FROM Parcela WHERE idFinca = '$idFinca'"
         );
         List<Map<String, dynamic>> list = res.isNotEmpty ? res : [];
@@ -374,24 +374,24 @@ class DBProvider {
     // Actualizar Registros
     Future<int> updateFinca( Finca nuevaFinca ) async {
 
-        final db  = await database;
-        final res = await db.update('Finca', nuevaFinca.toJson(), where: 'id = ?', whereArgs: [nuevaFinca.id] );
+        final db  = await (database);
+        final res = await db!.update('Finca', nuevaFinca.toJson(), where: 'id = ?', whereArgs: [nuevaFinca.id] );
         return res;
 
     }
 
     Future<int> updateParcela( Parcela nuevaParcela ) async {
 
-        final db  = await database;
-        final res = await db.update('Parcela', nuevaParcela.toJson(), where: 'id = ?', whereArgs: [nuevaParcela.id] );
+        final db  = await (database);
+        final res = await db!.update('Parcela', nuevaParcela.toJson(), where: 'id = ?', whereArgs: [nuevaParcela.id] );
         return res;
 
     }
 
     Future<int> updateTestPiso( TestPiso nuevoTestPiso ) async {
 
-        final db  = await database;
-        final res = await db.update('TestPiso', nuevoTestPiso.toJson(), where: 'id = ?', whereArgs: [nuevoTestPiso.id] );
+        final db  = await (database);
+        final res = await db!.update('TestPiso', nuevoTestPiso.toJson(), where: 'id = ?', whereArgs: [nuevoTestPiso.id] );
         return res;
 
     }
@@ -400,42 +400,42 @@ class DBProvider {
     //Conteos analisis
 
 
-    Future<double> countPisoTotal( String idTest, int idContacto) async {
-        final db = await database;
+    Future<double> countPisoTotal( String? idTest, int idContacto) async {
+        final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
                         "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
                         "WHERE idTest = '$idTest' AND idContacto = '$idContacto' AND existe = 1";
-        int  res = Sqflite.firstIntValue(await db.rawQuery(query));
-        double value = res/60;
+        int?  res = Sqflite.firstIntValue(await db!.rawQuery(query));
+        double value = res!/60;
         return value;
 
     }
 
-    Future<double> countCompetencia( String idTest, int idContacto) async {
-        final db = await database;
+    Future<double> countCompetencia( String? idTest, int idContacto) async {
+        final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
                         "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
                         "WHERE idTest = '$idTest' AND idContacto IN (0,1,2,3,4,5) AND existe = 1";
-        int  res = Sqflite.firstIntValue(await db.rawQuery(query));
+        int? res = Sqflite.firstIntValue(await db!.rawQuery(query));
 
         //print(res);
-        double value = res/60;
+        double value = res!/60;
         return value;
 
     }
 
-    Future<double> countNoCompetencia( String idTest, int idContacto) async {
-        final db = await database;
+    Future<double> countNoCompetencia( String? idTest, int idContacto) async {
+        final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
                         "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
                         "WHERE idTest = '$idTest' AND idContacto IN (6,7,8,9) AND existe = 1";
-        int  res = Sqflite.firstIntValue(await db.rawQuery(query));
+        int? res = Sqflite.firstIntValue(await db!.rawQuery(query));
 
         //print(res);
-        double value = res/60;
+        double value = res!/60;
         return value;
 
     }
@@ -448,30 +448,30 @@ class DBProvider {
 
 
     // Eliminar registros
-    Future<int> deleteFinca( String idFinca ) async {
+    Future<int> deleteFinca( String? idFinca ) async {
 
-        final db  = await database;
-        final res = await db.delete('Finca', where: 'id = ?', whereArgs: [idFinca]);
+        final db  = await (database);
+        final res = await db!.delete('Finca', where: 'id = ?', whereArgs: [idFinca]);
         return res;
     }
-    Future<int> deleteParcela( String idParcela ) async {
+    Future<int> deleteParcela( String? idParcela ) async {
 
-        final db  = await database;
-        final res = await db.delete('Parcela', where: 'id = ?', whereArgs: [idParcela]);
-        return res;
-    }
-
-    Future<int> deleteTestPiso( String idTest ) async {
-
-        final db  = await database;
-        final res = await db.delete('TestPiso', where: 'id = ?', whereArgs: [idTest]);
+        final db  = await (database);
+        final res = await db!.delete('Parcela', where: 'id = ?', whereArgs: [idParcela]);
         return res;
     }
 
-    Future<int> deletePaso( String idPaso ) async {
+    Future<int> deleteTestPiso( String? idTest ) async {
 
-        final db  = await database;
-        final res = await db.delete('Paso', where: 'id = ?', whereArgs: [idPaso]);
+        final db  = await (database);
+        final res = await db!.delete('TestPiso', where: 'id = ?', whereArgs: [idTest]);
+        return res;
+    }
+
+    Future<int> deletePaso( String? idPaso ) async {
+
+        final db  = await (database);
+        final res = await db!.delete('Paso', where: 'id = ?', whereArgs: [idPaso]);
         return res;
     }
 

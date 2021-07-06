@@ -20,7 +20,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
 
     bool _guardando = false;
     int variableVacias = 0;
-    int countPlanta = 0;
+    int? countPlanta = 0;
     var uuid = Uuid();
 
     Paso paso = Paso();
@@ -49,7 +49,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     @override
     Widget build(BuildContext context) {
 
-        List data = ModalRoute.of(context).settings.arguments;
+        List data = ModalRoute.of(context)!.settings.arguments as List<dynamic>;
         
         paso.idTest = data[1];
         paso.caminata = data[0] ;
@@ -70,7 +70,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                                 Divider(),
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text('Punta de zapato en contacto con :', style: Theme.of(context).textTheme.headline6
+                                    child: Text('Punta de zapato en contacto con :', style: Theme.of(context).textTheme.headline6!
                                                 .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
                                 ),
                                 Divider(),
@@ -101,12 +101,12 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                 int idPlaga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "100","label": "No data"})['value']);
                 
                 return CheckboxListTile(
-                    title: Text(labelPlaga, style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                    title: Text(labelPlaga, style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                     value: (radios[itemEnContato[idPlaga]['value']] == '1') ? true : false,
                     onChanged: (value){
                         setState(() {
                             radioGroupKeys();
-                            radios[itemEnContato[idPlaga]['value']] = value ? '1' : '2';
+                            radios[itemEnContato[idPlaga]['value']] = value! ? '1' : '2';
                             
                         });
                     }
@@ -129,7 +129,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             
             label: Text('Guardar',
                 style: Theme.of(context).textTheme
-                    .headline6
+                    .headline6!
                     .copyWith(fontWeight: FontWeight.w600, color: Colors.white)
             ),
             padding:EdgeInsets.symmetric(vertical: 13, horizontal: 50),
@@ -190,12 +190,12 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     void mostrarSnackbar(int variableVacias){
         final snackbar = SnackBar(
             content: Text('Campo Vacio, Favor seleccione un item',
-                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+                style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
             ),
             duration: Duration(seconds: 2),
         );
         setState(() {_guardando = false;});
-        scaffoldKey.currentState.showSnackBar(snackbar);
+        scaffoldKey.currentState!.showSnackBar(snackbar);
     }
 
    

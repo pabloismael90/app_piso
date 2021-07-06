@@ -9,13 +9,13 @@ import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/titulos.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:uuid/uuid.dart';
 
 class DesicionesPage extends StatefulWidget {
-    DesicionesPage({Key key}) : super(key: key);
+    DesicionesPage({Key? key}) : super(key: key);
 
     @override
     _DesicionesPageState createState() => _DesicionesPageState();
@@ -28,7 +28,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     Acciones acciones = Acciones();
     List<Decisiones> listaDecisiones = [];
     List<Acciones> listaAcciones = [];
-    String idPlagaMain = "";
+    String? idPlagaMain = "";
     bool _guardando = false;
     var uuid = Uuid();
     
@@ -87,16 +87,16 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
    
     
-    Future<double> _countPercentTotal(String idTest,int idPlaga) async{
+    Future<double> _countPercentTotal(String? idTest,int idPlaga) async{
         double countPalga = await DBProvider.db.countPisoTotal(idTest, idPlaga);
         //print(countPalga);        
         return countPalga*100;
     }
-    Future<double> _countTotalCompetencia(String idTest,int idPlaga) async{
+    Future<double> _countTotalCompetencia(String? idTest,int idPlaga) async{
         double countPalga = await DBProvider.db.countCompetencia(idTest, idPlaga);        
         return countPalga*100;
     }
-    Future<double> _countTotalNoCompetencia(String idTest,int idPlaga) async{
+    Future<double> _countTotalNoCompetencia(String? idTest,int idPlaga) async{
         double countPalga = await DBProvider.db.countNoCompetencia(idTest, idPlaga);        
         return countPalga*100;
     }
@@ -111,12 +111,12 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     @override
     Widget build(BuildContext context) {
-        TestPiso plagaTest = ModalRoute.of(context).settings.arguments;
+        TestPiso? plagaTest = ModalRoute.of(context)!.settings.arguments as TestPiso?;
         
        
         Future _getdataFinca() async{
-            Finca finca = await DBProvider.db.getFincaId(plagaTest.idFinca);
-            Parcela parcela = await DBProvider.db.getParcelaId(plagaTest.idLote);
+            Finca? finca = await DBProvider.db.getFincaId(plagaTest!.idFinca);
+            Parcela? parcela = await DBProvider.db.getParcelaId(plagaTest.idLote);
             List<Paso> pasos = await DBProvider.db.getTodasPasoIdTest(plagaTest.id);
             return [finca, parcela, pasos];
         }
@@ -131,11 +131,11 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     if (!snapshot.hasData) {
                         return CircularProgressIndicator();
                     }
-                    List<Widget> pageItem = List<Widget>();
+                    List<Widget> pageItem = [];
                     Finca finca = snapshot.data[0];
                     Parcela parcela = snapshot.data[1];
                     
-                    pageItem.add(_principalData(finca, parcela, plagaTest.id));
+                    pageItem.add(_principalData(finca, parcela, plagaTest!.id));
                     pageItem.add(_hierbasProblematicas());   
                     pageItem.add(_competeciaValoracion());  
                     pageItem.add(_observaciones());   
@@ -156,7 +156,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                 "Deslice hacia la derecha para continuar con el formulario",
                                                 textAlign: TextAlign.center,
                                                 style: Theme.of(context).textTheme
-                                                    .headline5
+                                                    .headline5!
                                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 16)
                                             ),
                                         ),
@@ -186,7 +186,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
     }
 
-    Widget _principalData(Finca finca, Parcela parcela, String plagaid){
+    Widget _principalData(Finca finca, Parcela parcela, String? plagaid){
     
                 return Container(
                     decoration: BoxDecoration(
@@ -214,7 +214,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                                         "Porcentaje de cobertura",
                                                                         textAlign: TextAlign.center,
                                                                         style: Theme.of(context).textTheme
-                                                                            .headline5
+                                                                            .headline5!
                                                                             .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                                                                     ),
                                                                 ),
@@ -255,14 +255,14 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                                                     Expanded(
                                                                         child: Container(
                                                                             padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                                                            child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6
+                                                                            child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6!
                                                                                                     .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                                                                         ),
                                                                     ),
                                                                     
                                                                     Container(
                                                                         width: 100,
-                                                                        child: Text('Cobertura', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
+                                                                        child: Text('Cobertura', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6!
                                                                                 .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                                                                     ),
                                                                 ],
@@ -287,8 +287,8 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
 
     Widget _dataFincas( BuildContext context, Finca finca, Parcela parcela ){
-        String labelMedidaFinca;
-        String labelvariedad;
+        String? labelMedidaFinca;
+        String? labelvariedad;
 
         final item = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}');
         labelMedidaFinca  = item['label'];
@@ -413,7 +413,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
             children: [
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(titulo, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6
+                    child: Text(titulo, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6!
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
                 Divider()
@@ -423,11 +423,11 @@ class _DesicionesPageState extends State<DesicionesPage> {
     
     
     
-    Widget _countPlagas(String idTest, int caminata){
-        List<Widget> lisItem = List<Widget>();
+    Widget _countPlagas(String? idTest, int caminata){
+        List<Widget> lisItem = [];
 
         for (var i = 0; i < itemEnContato.length; i++) {
-            String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
             
             
@@ -489,7 +489,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
     
 
-    Widget _countCompetencia(String idTest, int idplga, String labelPlaga){
+    Widget _countCompetencia(String? idTest, int idplga, String? labelPlaga){
         return Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -530,7 +530,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
     }
 
-    Widget _countNoCompetencia(String idTest, int idplga, String labelPlaga){
+    Widget _countNoCompetencia(String? idTest, int idplga, String? labelPlaga){
         return Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -571,7 +571,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
     }
 
-    Widget _sueloDesnudo(String idTest, int idplga, String labelPlaga){
+    Widget _sueloDesnudo(String? idTest, int idplga, String? labelPlaga){
         return Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -602,7 +602,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
 
     Widget _hierbasProblematicas(){
-        List<Widget> listHierbaProblema = List<Widget>();
+        List<Widget> listHierbaProblema = [];
 
         listHierbaProblema.add(
             Column(
@@ -614,7 +614,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "Hierbas que consideran problematicas",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -626,14 +626,14 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
 
         for (var i = 0; i < hierbaProblematica.length; i++) {
-            String labelPlaga = hierbaProblematica.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelPlaga = hierbaProblematica.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
             
             listHierbaProblema.add(
 
                 CheckboxListTile(
                     title: Text('$labelPlaga',
-                        style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16),
+                        style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
                     ),
                     value: checkhierbaProblema[hierbaProblematica[i]['value']], 
                     onChanged: (value) {
@@ -669,7 +669,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
 
     Widget _competeciaValoracion(){
-        List<Widget> listCompValora = List<Widget>();
+        List<Widget> listCompValora = [];
 
         listCompValora.add(
             Column(
@@ -681,7 +681,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "Competencia entre hierbas y cacao",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -693,14 +693,14 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
         
         for (var i = 0; i < itemCompetencia.length; i++) {
-            String labelSituacion = itemCompetencia.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelSituacion = itemCompetencia.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
                         
             listCompValora.add(
 
                 Container(
                     child: CheckboxListTile(
                         title: Text('$labelSituacion',
-                            style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16),
+                            style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
                         ),
                         value: checksCompetencia[itemCompetencia[i]['value']], 
                         onChanged: (value) {
@@ -725,7 +725,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "Valoración de cobertura del piso",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -737,7 +737,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
         
         for (var i = 0; i < itemValoracion.length; i++) {
-            String labelProblemaSuelo = itemValoracion.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelProblemaSuelo = itemValoracion.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             listCompValora.add(
 
                 Container(
@@ -778,7 +778,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
 
     Widget _observaciones(){
-        List<Widget> listObservaciones = List<Widget>();
+        List<Widget> listObservaciones = [];
 
         listObservaciones.add(
             Column(
@@ -790,7 +790,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "Observaciones de suelo",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -803,7 +803,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         
 
         for (var i = 0; i < itemObsSuelo.length; i++) {
-            String labelProblemaSombra = itemObsSuelo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelProblemaSombra = itemObsSuelo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
             listObservaciones.add(
 
@@ -833,7 +833,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "Observaciones de sombra",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -846,7 +846,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         
 
         for (var i = 0; i < itemObsSombra.length; i++) {
-            String labelProblemaManejo = itemObsSombra.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelProblemaManejo = itemObsSombra.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
             listObservaciones.add(
 
@@ -887,7 +887,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
 
     Widget _obsManejo(){
-        List<Widget> listObsManejo = List<Widget>();
+        List<Widget> listObsManejo = [];
 
         listObsManejo.add(
             Column(
@@ -899,7 +899,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "Observaciones de manejo",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -912,7 +912,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         
 
         for (var i = 0; i < itemObsManejo.length; i++) {
-            String labelProblemaManejo = itemObsManejo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelProblemaManejo = itemObsManejo.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
             listObsManejo.add(
 
@@ -954,7 +954,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     Widget _accionesMeses(){
 
-        List<Widget> listaAcciones = List<Widget>();
+        List<Widget> listaAcciones = [];
         listaAcciones.add(
             
             Column(
@@ -966,7 +966,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "¿Qué acciones vamos a realizar y cuando?",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
                             ),
                         )
@@ -977,7 +977,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
             
         );
         for (var i = 0; i < listSoluciones.length; i++) {
-            String labelSoluciones = listSoluciones.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+            String? labelSoluciones = listSoluciones.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
             
             listaAcciones.add(
@@ -1043,7 +1043,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
 
 
-    Widget  _botonsubmit(String idplaga){
+    Widget  _botonsubmit(String? idplaga){
         idPlagaMain = idplaga;
         return SingleChildScrollView(
             child: Container(
@@ -1069,7 +1069,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 "¿Ha Terminado todos los formularios de toma de desición?",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme
-                                    .headline5
+                                    .headline5!
                                     .copyWith(fontWeight: FontWeight.w600)
                             ),
                         ),
@@ -1079,7 +1079,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                                 icon:Icon(Icons.save),
                                 label: Text('Guardar',
                                     style: Theme.of(context).textTheme
-                                        .headline6
+                                        .headline6!
                                         .copyWith(fontWeight: FontWeight.w600, color: Colors.white)
                                 ),
                                 padding:EdgeInsets.all(13),

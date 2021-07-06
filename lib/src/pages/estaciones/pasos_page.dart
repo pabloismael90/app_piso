@@ -19,9 +19,9 @@ class _PasoPageState extends State<PasoPage> {
 
     @override
     Widget build(BuildContext context) {
-        List dataCaminatases = ModalRoute.of(context).settings.arguments;
+        List dataCaminatases = ModalRoute.of(context)!.settings.arguments as List<dynamic>;
         TestPiso piso = dataCaminatases[0];
-        int indiceCaminata = dataCaminatases[1]+1;
+        int? indiceCaminata = dataCaminatases[1]+1;
         fincasBloc.obtenerPasoIdTest(piso.id, indiceCaminata);
 
         return Scaffold(
@@ -75,7 +75,7 @@ class _PasoPageState extends State<PasoPage> {
     
 
 
-    Widget  _listaDePisos(List paso, BuildContext context, int indiceCaminata){
+    Widget  _listaDePisos(List paso, BuildContext context, int? indiceCaminata){
 
         return ListView.builder(
             itemBuilder: (context, index) {
@@ -136,7 +136,7 @@ class _PasoPageState extends State<PasoPage> {
 
     
 
-    Widget  _countPiso(String idPlaga,  int caminatas, TestPiso piso){
+    Widget  _countPiso(String? idPlaga,  int? caminatas, TestPiso piso){
         return StreamBuilder<List<Paso>>(
             stream: fincasBloc.pasoStream,
             
@@ -154,21 +154,21 @@ class _PasoPageState extends State<PasoPage> {
                         children: [
                             Text('Pasos: $value / 20',
                                 style: Theme.of(context).textTheme
-                                        .headline6
+                                        .headline6!
                                         .copyWith(fontWeight: FontWeight.w600)
                             ),
                             _addPaso(context, caminatas, piso, value),
                         ],
                     );
                 }else{
-                    if (caminatas <= 2){
+                    if (caminatas! <= 2){
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                                 Flexible(
                                     child: Text('Pasos: $value / 20',
                                         style: Theme.of(context).textTheme
-                                                .headline6
+                                                .headline6!
                                                 .copyWith(fontWeight: FontWeight.w600)
                                     ),
                                 ),
@@ -176,7 +176,7 @@ class _PasoPageState extends State<PasoPage> {
                                     icon:Icon(Icons.navigate_next_rounded),                               
                                     label: Text('Siguiente caminata',
                                         style: Theme.of(context).textTheme
-                                            .headline6
+                                            .headline6!
                                             .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
                                     ),
                                     padding:EdgeInsets.all(13),
@@ -191,7 +191,7 @@ class _PasoPageState extends State<PasoPage> {
                                 Flexible(
                                     child: Text('Pisos : $value / 20',
                                         style: Theme.of(context).textTheme
-                                                .headline6
+                                                .headline6!
                                                 .copyWith(fontWeight: FontWeight.w600)
                                     ),
                                 ),
@@ -199,7 +199,7 @@ class _PasoPageState extends State<PasoPage> {
                                     icon:Icon(Icons.chevron_left),                               
                                     label: Text('Lista de caminatas',
                                         style: Theme.of(context).textTheme
-                                            .headline6
+                                            .headline6!
                                             .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
                                     ),
                                     padding:EdgeInsets.all(13),
@@ -216,14 +216,14 @@ class _PasoPageState extends State<PasoPage> {
     }
 
 
-    Widget  _addPaso(BuildContext context,  int caminata, TestPiso plaga, int value){
+    Widget  _addPaso(BuildContext context,  int? caminata, TestPiso plaga, int value){
         return RaisedButton.icon(
             
             icon:Icon(Icons.add_circle_outline_outlined),
             
             label: Text('Agregar Paso',
                 style: Theme.of(context).textTheme
-                    .headline6
+                    .headline6!
                     .copyWith(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 16)
             ),
             padding:EdgeInsets.all(13),

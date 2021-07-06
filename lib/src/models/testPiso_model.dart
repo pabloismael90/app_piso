@@ -13,11 +13,11 @@ class TestPiso {
         this.fechaTest,
     });
 
-    String id;
-    String idFinca;
-    String idLote;
-    int caminatas;
-    String fechaTest;
+    String? id;
+    String? idFinca;
+    String? idLote;
+    int? caminatas;
+    String? fechaTest;
 
     factory TestPiso.fromJson(Map<String, dynamic> json) => TestPiso(
         id: json["id"],

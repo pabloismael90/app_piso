@@ -6,10 +6,10 @@ class Acciones {
         this.idTest,
     });
 
-    String id;
-    int idItem;
-    String repuesta;
-    String idTest;
+    String? id;
+    int? idItem;
+    String? repuesta;
+    String? idTest;
 
     factory Acciones.fromJson(Map<String, dynamic> json) => Acciones(
         id: json["id"],
