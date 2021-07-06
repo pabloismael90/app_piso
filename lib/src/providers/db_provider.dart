@@ -315,16 +315,16 @@ class DBProvider {
         return list;
     }
 
-    // Future<int> getPlagasIdPaso(String idPaso, int idplaga) async {
-        
-    //     final db  = await database;
-    //     String query = "SELECT existe FROM ExistePlaga WHERE idPaso = '$idPaso' AND idPlaga = '$idplaga'";
-    //     final  res = await db!.rawQuery(query);
-    //     int value = res.isNotEmpty ? res[0]['existe'] : -1;
-    //     //print(value);
 
-    //     return value;
-    // }
+    Future<EnContacto?> existeEnContactoIdPaso(String? idPaso) async {
+
+        final db  = await (database);
+        final res = await db!.rawQuery("SELECT * FROM EnContacto WHERE idPaso = '$idPaso' AND existe = 1");
+        
+        return res.isNotEmpty ? EnContacto.fromJson(res.first) : null;
+    }
+
+    
 
     Future<List<Decisiones>> getDecisionesIdTest(String? idTest) async{
         final db = await (database);

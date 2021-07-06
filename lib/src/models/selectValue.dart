@@ -78,27 +78,15 @@ List<Map<String, dynamic>> variedadCacao(){
     final List<Map<String, dynamic>>  variedadesCacao = [
             {
                 'value': '1', 
-                'label': 'CAT 1'
+                'label': 'Clones'
             },
             {
                 'value': '2', 
-                'label': 'CAT 2'
+                'label': 'Plantas por semillas'
             },
             {
                 'value': '3', 
-                'label': 'CAT 3'
-            },
-            {
-                'value': '3', 
-                'label': 'CAT 3'
-            },
-            {
-                'value': '4', 
-                'label': 'CAT 4'
-            },
-            {
-                'value': '5', 
-                'label': 'CAT 5'
+                'label': 'Mezcla patrones y clones'
             },
         ];
 
@@ -109,48 +97,57 @@ List<Map<String, dynamic>> itemContacto(){
     final List<Map<String, dynamic>>  contactoCacao = [
             
         {
-        'value' : '0',
-        'label' : 'Zacate anual',
+            'value' : '0',
+            'label' : 'Zacate anual',
         },
         {
-        'value' : '1',
-        'label' : 'Zacate perene',
+            'value' : '1',
+            'label' : 'Zacate perene',
         },
         {
-        'value' : '2',
-        'label' : 'Hoja ancha anual',
+            'value' : '2',
+            'label' : 'Hoja ancha anual',
         },
         {
-        'value' : '3',
-        'label' : 'Hoja ancha perenne',
+            'value' : '3',
+            'label' : 'Hoja ancha perenne',
         },
         {
-        'value' : '4',
-        'label' : 'Ciperácea o Coyolillo',
+            'value' : '4',
+            'label' : 'Ciperácea o Coyolillo',
         },
         {
-        'value' : '5',
-        'label' : 'Bejucos en suelo',
+            'value' : '5',
+            'label' : 'Bejucos en suelo',
         },
         {
-        'value' : '6',
-        'label' : 'Cobertura hoja ancha',
+            'value' : '6',
+            'label' : 'Tanda o planta parasítica',
+        },
+
+
+        
+        {
+            'value' : '7',
+            'label' : 'Cobertura hoja ancha',
         },
         {
-        'value' : '7',
-        'label' : 'Cobertura hoja angosta',
+            'value' : '8',
+            'label' : 'Cobertura hoja angosta',
+        },
+
+
+        {
+            'value' : '9',
+            'label' : 'Suelo desnudo',
         },
         {
-        'value' : '8',
-        'label' : 'Hojarasca',
+            'value' : '10',
+            'label' : 'Hojarasca',
         },
         {
-        'value' : '9',
-        'label' : 'Mulch de maleza',
-        },
-        {
-        'value' : '10',
-        'label' : 'Suelo desnudo',
+            'value' : '11',
+            'label' : 'Mulch de maleza',
         },
 
     ];

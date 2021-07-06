@@ -1,7 +1,8 @@
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
 import 'package:app_piso/src/models/parcela_model.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
-import 'package:app_piso/src/utils/widget/titulos.dart';
+import 'package:app_piso/src/utils/widget/button.dart';
+import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -76,7 +77,7 @@ class _AgregarParcelaState extends State<AgregarParcela> {
         
         
         return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(title: Text(tituloForm as String),),
             body: FutureBuilder(
                     future: getparcelas(fincaid),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -90,8 +91,6 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                         return SingleChildScrollView(                
                             child: Column(
                                 children: [
-                                    TitulosPages(titulo: tituloForm),
-                                    Divider(),
                                     Container(
                                     padding: EdgeInsets.all(15.0),
                                         child: Form(
@@ -99,22 +98,12 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                                             child: Column(
                                                 children: <Widget>[
                                                     _nombreParcela(fincaid),
-                                                    SizedBox(height: 40.0,),
+                                                    SizedBox(height: 30.0,),
                                                     _areaParcela(finca, labelMedida, listParcela),
-                                                    SizedBox(height: 40.0,),
-                                                    Row(
-                                                        children: <Widget>[
-                                                            Flexible(
-                                                                child: _variedadCacao(),
-                                                            ),
-                                                            SizedBox(width: 20.0,),
-                                                            Flexible(
-                                                                child: _numeroPlanta(labelMedida),
-                                                            ),
-                                                        ],
-                                                    ),
-                                                    SizedBox(height: 60.0,),
-                                                    _botonsubmit(tituloBtn)
+                                                    SizedBox(height: 30.0,),
+                                                    _variedadCacao(),
+                                                    SizedBox(height: 30.0,),
+                                                    _numeroPlanta(labelMedida),
                                                 ],
                                             ),
                                         ),
@@ -123,15 +112,15 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                             ),
                         );
                     },
-                ),
+            ),
+            bottomNavigationBar: botonesBottom(_botonsubmit(tituloBtn)),
         );
     
     }
     Widget _nombreParcela( String? fincaid ){
-        //print('id de finca: $fincaid');
         return TextFormField(
             initialValue: parcela.nombreLote,
-            //autofocus: true,
+            maxLength: 30,
             decoration: InputDecoration(
                 labelText: 'Nombre de la parcela'
             ),
@@ -165,27 +154,25 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                 return TextFormField(
                     initialValue: parcela.areaLote == null ? '' : parcela.areaLote.toString(),
                     keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    maxLength: 5,
                     decoration: InputDecoration(
                         labelText: 'Área de la parcela ($labelMedida)'
                     ),
                     validator: (value) {
                         
                         if (utils.isNumeric(value!)){
-
                             valorsuma = double.parse(value) + sumaParcelas;
-                            //print(valorsuma);
-                            //print(finca.areaFinca);
                             if (valorsuma <= finca!.areaFinca!) {
                                 if (double.parse(value) > 0) {
                                     return null;
                                 } else {
-                                    return 'Área mayor a cero';
+                                    return 'Valor $value inválido';
                                 }
                             } else {
                                 return 'Área parcelas mayor a Finca';
                             }
                         }else{
-                            return 'Solo números';
+                            return 'Valor $value inválido';
                         }
                     },
                     onSaved: (value) => parcela.areaLote = double.parse(value!),
@@ -199,6 +186,7 @@ class _AgregarParcelaState extends State<AgregarParcela> {
         return SelectFormField(
             initialValue: parcela.variedadCacao.toString(),
             labelText: 'Variedad',
+            maxLength: 24,
             items: selectMap.variedadCacao(),
             validator: (value){
                 if(value!.length < 1){
@@ -207,9 +195,7 @@ class _AgregarParcelaState extends State<AgregarParcela> {
                     return null;
                 } 
             },
-
-            //onChanged: (val) => print(val),
-            onSaved: (value) => parcela.variedadCacao = int.parse(value as String),
+            onSaved: (value) => parcela.variedadCacao = int.parse(value!),
         );
     }
 
@@ -220,43 +206,28 @@ class _AgregarParcelaState extends State<AgregarParcela> {
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
-            ], 
+            ],
+            maxLength: 5,
             decoration: InputDecoration(
-                labelText: 'No de plantas x $labelMedida'
+                labelText: 'No de plantas por $labelMedida'
             ),
-            validator: (value) {
-
-                final isDigitsOnly = int.tryParse(value!);
-                if (isDigitsOnly == null) {
-                    return 'Solo números enteros';
-                }
-                if (isDigitsOnly <= 0) {
-                    return 'Valor invalido';
-                }else{
-                    return null;
-                }
-                 
-                    
-
-            },
+            validator: (value) => utils.validateEntero(value),
             onSaved: (value) => parcela.numeroPlanta = int.parse(value!),
         );
 
     }
 
-    Widget  _botonsubmit(String tituloBtn){
-        return RaisedButton.icon(
-            
-            icon:Icon(Icons.save, color: Colors.white,),
-            
-            label: Text(tituloBtn,
-                style: Theme.of(context).textTheme
-                    .headline6!
-                    .copyWith(fontWeight: FontWeight.w600, color: Colors.white)
-            ),
-            padding:EdgeInsets.symmetric(vertical: 13, horizontal: 50),
-            onPressed:(_guardando) ? null : _submit,
-           // onPressed: _submit,
+    Widget  _botonsubmit(tituloBtn){
+        return Row(
+            children: [
+                Spacer(),
+                ButtonMainStyle(
+                    title: tituloBtn,
+                    icon: Icons.save,
+                    press: (_guardando) ? null : _submit,
+                ),
+                Spacer()
+            ],
         );
     }
     
@@ -266,8 +237,6 @@ class _AgregarParcelaState extends State<AgregarParcela> {
         
 
         if  ( !formKey.currentState!.validate() ){
-            
-            //Cuendo el form no es valido
             return null;
         }
         
@@ -275,19 +244,14 @@ class _AgregarParcelaState extends State<AgregarParcela> {
         formKey.currentState!.save();
 
         setState(() {_guardando = true;});
-
-        // print(parcela.id);
-        // print(parcela.idFinca);
-        // print(parcela.nombreLote);
-        // print(parcela.areaLote);
         if(parcela.id == null){
             parcela.id = uuid.v1();
             fincasBloc.addParcela(parcela, parcela.idFinca);
+            mostrarSnackbar('Registro parcela guardado', context);
         }else{
             fincasBloc.actualizarParcela(parcela, parcela.idFinca);
+            mostrarSnackbar('Registro parcela actualizada', context);
         }
-        //fincasBloc.addParcela(parcela);
-        //DBProvider.db.nuevoParcela(parcela);
 
         setState(() {_guardando = false;});
         

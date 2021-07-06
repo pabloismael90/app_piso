@@ -1,5 +1,8 @@
 
-import 'package:app_piso/src/utils/widget/titulos.dart';
+// import 'dart:html';
+
+import 'package:app_piso/src/utils/widget/button.dart';
+import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
@@ -19,7 +22,6 @@ class _AgregarFincaState extends State<AgregarFinca> {
     
     
     final formKey = GlobalKey<FormState>();
-    final scaffoldKey = GlobalKey<ScaffoldState>();
  
 
     Finca finca = new Finca();
@@ -48,15 +50,12 @@ class _AgregarFincaState extends State<AgregarFinca> {
         }
 
         return Scaffold(
-            key: scaffoldKey,
-            appBar: AppBar(),
+            appBar: AppBar(title: Text(tituloForm),),
             body: SingleChildScrollView(
                 child: Column(
                     children: [
-                        TitulosPages(titulo: tituloForm),
-                        Divider(),
                         Container(
-                            padding: EdgeInsets.all(15.0),
+                            padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                             child: Form(
                                 key: formKey,
                                 child: Column(
@@ -78,8 +77,6 @@ class _AgregarFincaState extends State<AgregarFinca> {
                                         _nombreProductor(),
                                         SizedBox(height: 40.0,),
                                         _nombreTecnico(),
-                                        SizedBox(height: 60.0,),
-                                        _botonsubmit(tituloBtn)
                                     ],
                                 ),
                             ),
@@ -87,13 +84,14 @@ class _AgregarFincaState extends State<AgregarFinca> {
                     ],
                 )
             ),
+            bottomNavigationBar: botonesBottom(_botonsubmit(tituloBtn))
         );
     }
 
     Widget _nombreFinca(){
         return TextFormField(
             initialValue: finca.nombreFinca,
-            autofocus: true,
+            maxLength: 30,
             decoration: InputDecoration(
                 labelText: 'Nombre de la finca',
             ),
@@ -112,7 +110,7 @@ class _AgregarFincaState extends State<AgregarFinca> {
     Widget _nombreProductor(){
         return TextFormField(
             initialValue: finca.nombreProductor,
-            autofocus: true,
+            maxLength: 30,
             decoration: InputDecoration(
                 labelText: 'Nombre de productor',
                 
@@ -134,19 +132,13 @@ class _AgregarFincaState extends State<AgregarFinca> {
         return TextFormField(
             initialValue: finca.areaFinca == null ? '' : finca.areaFinca.toString(),
             keyboardType: TextInputType.numberWithOptions(decimal: true),
+            maxLength: 5,
             decoration: InputDecoration(
                 labelText: 'Área de la finca',
                 hintText: 'ejem: 2',
                 
             ),
-            validator: (value) {
-                
-                if (utils.isNumeric(value!)){
-                    return null;
-                }else{
-                    return 'Solo números';
-                }
-            },
+            validator: (value) => utils.floatPositivo(value),
             onSaved: (value) => finca.areaFinca = double.parse(value!),
         );
 
@@ -156,17 +148,10 @@ class _AgregarFincaState extends State<AgregarFinca> {
         return SelectFormField(
             initialValue: finca.tipoMedida.toString(),            
             labelText: 'Unidad',
+            maxLength: 2,
             items: selectMap.dimenciones(),
-            validator: (value){
-                if(value!.length < 1){
-                    return 'Selecione un elemento';
-                }else{
-                    return null;
-                } 
-            },
-
-            //onChanged: (val) => print(val),
-            onSaved: (value) => finca.tipoMedida = int.parse(value as String),
+            validator: (value) => utils.validateSelect(value),
+            onSaved: (value) => finca.tipoMedida = int.parse(value!),
         );
     }
 
@@ -174,7 +159,7 @@ class _AgregarFincaState extends State<AgregarFinca> {
     Widget _nombreTecnico(){
         return TextFormField(
             initialValue: finca.nombreTecnico,
-            autofocus: true,
+            maxLength: 30,
             decoration: InputDecoration(
                 labelText: 'Nombre del Técnico'
             ),
@@ -183,7 +168,7 @@ class _AgregarFincaState extends State<AgregarFinca> {
             },
             onSaved: (value){
                 if(value!.length < 1){
-                    finca.nombreTecnico = 'Sin Nombre';
+                    finca.nombreTecnico = '';
                 }else{
                     finca.nombreTecnico = value;
                 }
@@ -193,17 +178,16 @@ class _AgregarFincaState extends State<AgregarFinca> {
     }
 
     Widget  _botonsubmit(tituloBtn){
-        return RaisedButton.icon(
-            
-            icon:Icon(Icons.save, color: Colors.white,),
-            
-            label: Text(tituloBtn,
-                style: Theme.of(context).textTheme
-                    .headline6!
-                    .copyWith(fontWeight: FontWeight.w600, color: Colors.white)
-            ),
-            padding:EdgeInsets.symmetric(vertical: 13, horizontal: 50),
-            onPressed:(_guardando) ? null : _submit,
+        return Row(
+            children: [
+                Spacer(),
+                ButtonMainStyle(
+                    title: tituloBtn,
+                    icon: Icons.save,
+                    press: (_guardando) ? null : _submit,
+                ),
+                Spacer()
+            ],
         );
     }
 
@@ -222,21 +206,18 @@ class _AgregarFincaState extends State<AgregarFinca> {
 
         setState(() {_guardando = true;});
 
-        // print(finca.id);
-        // print(finca.nombreFinca);
-        // print(finca.areaFinca);
-        // print(finca.tipoMedida);
+      
         if(finca.id == null){
             finca.id = uuid.v1();
-            //print(finca.id);
             fincasBloc.addFinca(finca);
+            mostrarSnackbar('Registro finca guardado', context);
         }else{
-            //print(finca.id);
             fincasBloc.actualizarFinca(finca);
+            mostrarSnackbar('Registro finca actualizada', context);
         }
 
         setState(() {_guardando = false;});
-        mostrarSnackbar('Registro Guardado');
+        
 
 
         Navigator.pop(context, 'fincas');
@@ -245,12 +226,5 @@ class _AgregarFincaState extends State<AgregarFinca> {
     }
 
     
-    void mostrarSnackbar(String mensaje){
-        final snackbar = SnackBar(
-            content: Text(mensaje),
-            duration: Duration(microseconds: 1500),
-        );
 
-        scaffoldKey.currentState!.showSnackBar(snackbar);
-    }
 }

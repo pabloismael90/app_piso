@@ -7,7 +7,7 @@ import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/pages/finca/finca_page.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/constants.dart';
-import 'package:app_piso/src/utils/widget/titulos.dart';
+import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 
@@ -124,7 +124,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         
 
         return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(title: Text('Toma de Decisiones'),),
             body: FutureBuilder(
                 future: _getdataFinca(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -145,24 +145,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
                     return Column(
                         children: [
-                            Container(
-                                child: Column(
-                                    children: [
-                                        TitulosPages(titulo: 'Toma de Decisiones'),
-                                        Divider(),
-                                        Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 10),
-                                            child: Text(
-                                                "Deslice hacia la derecha para continuar con el formulario",
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context).textTheme
-                                                    .headline5!
-                                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 16)
-                                            ),
-                                        ),
-                                    ],
-                                )
-                            ),
+                            mensajeSwipe('Deslice hacia la izquierda para continuar con el formulario'),
                             Expanded(
                                 
                                 child: Swiper(
@@ -188,98 +171,73 @@ class _DesicionesPageState extends State<DesicionesPage> {
 
     Widget _principalData(Finca finca, Parcela parcela, String? plagaid){
     
-                return Container(
-                    decoration: BoxDecoration(
-                        
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                        children: [
-                            _dataFincas( context, finca, parcela),
+                return Column(
+                    children: [
+                        _dataFincas( context, finca, parcela),
 
-                            Expanded(
-                                child: SingleChildScrollView(
-                                    child: Container(
-                                        color: Colors.white,
-                                        child: Column(
-                                            children: [
-                                                Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                                    child: InkWell(
-                                                        child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                                Container(                                                                    
-                                                                    child: Text(
-                                                                        "Porcentaje de cobertura",
-                                                                        textAlign: TextAlign.center,
-                                                                        style: Theme.of(context).textTheme
-                                                                            .headline5!
-                                                                            .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                                                                    ),
-                                                                ),
-                                                                Padding(
-                                                                    padding: EdgeInsets.only(left: 10),
-                                                                    child: Icon(
-                                                                        Icons.info_outline_rounded,
-                                                                        color: Colors.green,
-                                                                        size: 22.0,
-                                                                    ),
-                                                                ),
-                                                            ],
-                                                        ),
-                                                        onTap: () => _dialogText(context),
-                                                    ),
-                                                ),
-                                                
-                                                Container(
-                                                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                                    width: double.infinity,
-                                                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        boxShadow: [
-                                                            BoxShadow(
-                                                                    color: Color(0xFF3A5160)
-                                                                        .withOpacity(0.05),
-                                                                    offset: const Offset(1.1, 1.1),
-                                                                    blurRadius: 17.0),
-                                                            ],
-                                                    ),
-                                                    child: Column(
-                                                        children: [
-                                                             Row(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                children: [
-                                                                    Expanded(
-                                                                        child: Container(
-                                                                            padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                                                            child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6!
-                                                                                                    .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                                                                        ),
-                                                                    ),
-                                                                    
-                                                                    Container(
-                                                                        width: 100,
-                                                                        child: Text('Cobertura', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6!
-                                                                                .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                                                                    ),
-                                                                ],
+                        Expanded(
+                            child: SingleChildScrollView(
+                                child: Column(
+                                    children: [
+                                        Container(
+                                            padding: EdgeInsets.symmetric(vertical: 10),
+                                            child: InkWell(
+                                                child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                        Container(                                                                    
+                                                            child: Text(
+                                                                "Porcentaje de cobertura",
+                                                                textAlign: TextAlign.center,
+                                                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
                                                             ),
-                                                            Divider(),
-                                                            _countPlagas(plagaid, 1),
+                                                        ),
+                                                        Padding(
+                                                            padding: EdgeInsets.only(left: 10),
+                                                            child: Icon(
+                                                                Icons.info_outline_rounded,
+                                                                color: Colors.green,
+                                                                size: 20,
+                                                            ),
+                                                        ),
+                                                    ],
+                                                ),
+                                                onTap: () => _dialogText(context),
+                                            ),
+                                        ),
+                                        Divider(),
+                                        Container(
+                                            child: Column(
+                                                children: [
+                                                     Row(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                            Expanded(
+                                                                child: Container(
+                                                                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                                                    child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6!
+                                                                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                                                                ),
+                                                            ),
+                                                            
+                                                            Container(
+                                                                width: 100,
+                                                                child: Text('Cobertura', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6!
+                                                                        .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                                                            ),
                                                         ],
                                                     ),
-                                                ),
-                                            ],
+                                                    Divider(),
+                                                    _countPlagas(plagaid, 1),
+                                                ],
+                                            ),
                                         ),
-                                    ),
+                                    ],
                                 ),
-                            )
-                            
-                        ],
-                    ),
+                            ),
+                        )
+                        
+                    ],
                 );
                 
 
@@ -290,123 +248,30 @@ class _DesicionesPageState extends State<DesicionesPage> {
         String? labelMedidaFinca;
         String? labelvariedad;
 
-        final item = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}');
-        labelMedidaFinca  = item['label'];
+        labelMedidaFinca = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}')['label'];
+        labelvariedad = selectMap.variedadCacao().firstWhere((e) => e['value'] == '${parcela.variedadCacao}')['label'];
 
-        
-
-        final itemvariedad = selectMap.variedadCacao().firstWhere((e) => e['value'] == '${parcela.variedadCacao}');
-        labelvariedad  = itemvariedad['label'];
-
-        return Container(
-                    
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                    BoxShadow(
-                            color: Color(0xFF3A5160)
-                                .withOpacity(0.05),
-                            offset: const Offset(1.1, 1.1),
-                            blurRadius: 17.0),
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+                encabezadoCard('${finca.nombreFinca}','Parcela: ${parcela.nombreLote}', ''),
+                textoCardBody('Productor: ${finca.nombreProductor}'),
+                tecnico('${finca.nombreTecnico}'),
+                textoCardBody('Variedad: $labelvariedad'),
+                Wrap(
+                    spacing: 20,
+                    children: [
+                        textoCardBody('Área Finca: ${finca.areaFinca} ($labelMedidaFinca)'),
+                        textoCardBody('Área Parcela: ${parcela.areaLote} ($labelMedidaFinca)'),
+                        textoCardBody('N de plantas: ${parcela.numeroPlanta}'),
                     ],
-            ),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                    
-                    Flexible(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                            
-                                Padding(
-                                    padding: EdgeInsets.only(top: 10, bottom: 10.0),
-                                    child: Text(
-                                        "${finca.nombreFinca}",
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: Theme.of(context).textTheme.headline6,
-                                    ),
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only( bottom: 10.0),
-                                    child: Text(
-                                        "${parcela.nombreLote}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                    ),
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only( bottom: 10.0),
-                                    child: Text(
-                                        "Productor ${finca.nombreProductor}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                    ),
-                                ),
-
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                        Flexible(
-                                            child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                    Padding(
-                                                        padding: EdgeInsets.only( bottom: 10.0),
-                                                        child: Text(
-                                                            "Área Finca: ${finca.areaFinca} ($labelMedidaFinca)",
-                                                            style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                        ),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only( bottom: 10.0),
-                                                        child: Text(
-                                                            "N de Plantas: ${parcela.numeroPlanta}",
-                                                            style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                        ),
-                                                    ),
-                                                ],
-                                            ),
-                                        ),
-                                        Flexible(
-                                            child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                    Padding(
-                                                        padding: EdgeInsets.only( bottom: 10.0, left: 20),
-                                                        child: Text(
-                                                            "Área Parcela: ${parcela.areaLote} ($labelMedidaFinca)",
-                                                            style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                        ),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only( bottom: 10.0, left: 20),
-                                                        child: Text(
-                                                            "Variedad: $labelvariedad ",
-                                                            style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                        ),
-                                                    ),
-                                                ],
-                                            ),
-                                        )
-                                    ],
-                                )
-
-                                
-                            ],  
-                        ),
-                    ),
-                ],
-            ),
+                ),
+            ],  
         );
 
-    } 
-
+    }
+    
+    
     Widget _titulosTabla(String titulo){
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

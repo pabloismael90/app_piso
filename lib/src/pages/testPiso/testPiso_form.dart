@@ -1,7 +1,8 @@
 //import 'dart:html';
 
 import 'package:app_piso/src/models/testPiso_model.dart';
-import 'package:app_piso/src/utils/widget/titulos.dart';
+import 'package:app_piso/src/utils/widget/button.dart';
+import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
@@ -29,7 +30,7 @@ class _AgregarTestState extends State<AgregarTest> {
     var uuid = Uuid();
     String idFinca ='';
 
-    //Configuracion de FEcha
+    //Configuracion de Fecha
     DateTime _dateNow = new DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     String _fecha = '';
@@ -37,8 +38,8 @@ class _AgregarTestState extends State<AgregarTest> {
 
     List<TestPiso>? mainlistpisos ;
 
-    List? mainparcela;
-    late TextEditingController _control;
+    List<Map<String, dynamic>>? mainparcela;
+    TextEditingController? _control;
 
     @mustCallSuper
     // ignore: must_call_super
@@ -71,43 +72,30 @@ class _AgregarTestState extends State<AgregarTest> {
                     List<Map<String, dynamic>> _listitem = snapshot.data;
                     return Scaffold(
                         key: scaffoldKey,
-                        appBar: AppBar(),
+                        appBar: AppBar(title: Text('Toma de datos'),),
                         body: SingleChildScrollView(
                             child: Column(
                                 children: [
-                                    TitulosPages(titulo: 'Toma de datos'),
-                                    Divider(),
-                                    Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                                        child:Text(
-                                            'Método Punta de zapato',
-                                            style: Theme.of(context).textTheme
-                                                .headline6!
-                                                .copyWith(fontSize: 16)
-                                        ),
-                                    ),
-                                    Divider(),
                                     Container(
                                         child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: [
-
-                                                Padding(
-                                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                                                    child:Text(
-                                                        '3 Caminatas',
-                                                        style: Theme.of(context).textTheme
-                                                            .headline6!
-                                                            .copyWith(fontSize: 16)
+                                                Flexible(
+                                                    child: Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                                                        child:Text(
+                                                            'Método Punta de zapato',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                        ),
                                                     ),
                                                 ),
-                                                Padding(
-                                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                                                    child:Text(
-                                                        '20 Pasos por caminata',
-                                                        style: Theme.of(context).textTheme
-                                                            .headline6!
-                                                            .copyWith(fontSize: 16)
+                                                Flexible(
+                                                    child: Padding(
+                                                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                                                        child:Text(
+                                                            '3 Caminatas',
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                        ),
                                                     ),
                                                 ),
                                             ],
@@ -128,8 +116,6 @@ class _AgregarTestState extends State<AgregarTest> {
                                                     SizedBox(height: 40.0),
                                                     _date(context),
                                                     SizedBox(height: 60.0),
-
-                                                    _botonsubmit()
                                                 ],
                                             ),
                                         ),
@@ -137,6 +123,7 @@ class _AgregarTestState extends State<AgregarTest> {
                                 ],
                             ),
                         ),
+                        bottomNavigationBar: botonesBottom(_botonsubmit()),
                     );
                 }
             },
@@ -172,7 +159,9 @@ class _AgregarTestState extends State<AgregarTest> {
             stream: fincasBloc.parcelaSelect,
             builder: (BuildContext context, AsyncSnapshot snapshot){
                 if (!snapshot.hasData) {
+                    
                     return SelectFormField(
+                        type: SelectFormFieldType.dropdown,
                         controller: _control,
                         initialValue: '',
                         enabled: false,
@@ -183,10 +172,11 @@ class _AgregarTestState extends State<AgregarTest> {
 
                 mainparcela = snapshot.data;
                 return SelectFormField(
+                    type: SelectFormFieldType.dropdown,
                     controller: _control,
                     initialValue: '',
                     labelText: 'Seleccione la parcela',
-                    items: mainparcela as List<Map<String, dynamic>>,
+                    items: mainparcela,
                     validator: (value){
                         if(value!.length < 1){
                             return 'Selecione un elemento';
@@ -203,7 +193,7 @@ class _AgregarTestState extends State<AgregarTest> {
 
     }
 
-
+    
     Widget _date(BuildContext context){
         return TextFormField(
 
@@ -249,27 +239,26 @@ class _AgregarTestState extends State<AgregarTest> {
 
     Widget  _botonsubmit(){
         fincasBloc.obtenerPisos();
-        return StreamBuilder(
-            stream: fincasBloc.pisoStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-                if (!snapshot.hasData) {
-                    return Container();
-                }
-                mainlistpisos = snapshot.data;
-
-                return RaisedButton.icon(
-                    icon:Icon(Icons.save, color: Colors.white,),
-
-                    label: Text('Guardar',
-                        style: Theme.of(context).textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.w600, color: Colors.white)
-                    ),
-                    padding:EdgeInsets.symmetric(vertical: 13, horizontal: 50),
-                    onPressed:(_guardando) ? null : _submit,
-                    //onPressed: clearTextInput,
-                );
-            },
+        
+        return Row(
+            children: [
+                Spacer(),
+                StreamBuilder(
+                    stream: fincasBloc.pisoStream ,
+                    builder: (BuildContext context, AsyncSnapshot snapshot){
+                        if (!snapshot.hasData) {
+                            return Container();
+                        }
+                        mainlistpisos = snapshot.data;
+                        return ButtonMainStyle(
+                            title: 'Guardar',
+                            icon: Icons.save,
+                            press: (_guardando) ? null : _submit,
+                        );
+                    },
+                ),
+                Spacer()
+            ],
         );
 
 
@@ -291,17 +280,13 @@ class _AgregarTestState extends State<AgregarTest> {
         formKey.currentState!.save();
 
         mainlistpisos!.forEach((e) {
-            //print(piso.fechaTest);
-            //print(e.fechaTest);
             if (piso.idFinca == e.idFinca && piso.idLote == e.idLote && piso.fechaTest == e.fechaTest) {
                 checkRepetido = true;
             }
         });
 
-
-
         if (checkRepetido == true) {
-            mostrarSnackbar('Ya existe un registros con los mismos valores');
+            mostrarSnackbar('Ya existe un registros con los mismos valores', context);
             return null;
         }
 
@@ -310,10 +295,9 @@ class _AgregarTestState extends State<AgregarTest> {
 
 
         if (checkParcela == '1') {
-            mostrarSnackbar('La parcela selecionada no pertenece a esa finca');
+            mostrarSnackbar('La parcela selecionada no pertenece a esa finca', context);
             return null;
         }
-
 
 
         setState(() {_guardando = true;});
@@ -321,10 +305,10 @@ class _AgregarTestState extends State<AgregarTest> {
         if(piso.id == null){
             piso.id =  uuid.v1();
             fincasBloc.addPiso(piso);
+            mostrarSnackbar('Registro Guardado', context);
         }
 
         setState(() {_guardando = false;});
-        mostrarSnackbar('Registro Guardado');
 
 
         Navigator.pop(context, 'fincas');
@@ -333,12 +317,5 @@ class _AgregarTestState extends State<AgregarTest> {
     }
 
 
-    void mostrarSnackbar(String mensaje){
-        final snackbar = SnackBar(
-            content: Text(mensaje),
-            duration: Duration(seconds: 2),
-        );
-
-        scaffoldKey.currentState!.showSnackBar(snackbar);
-    }
+    
 }

@@ -4,7 +4,9 @@ import 'package:app_piso/src/models/paso_model.dart';
 
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
 import 'package:app_piso/src/providers/db_provider.dart';
+import 'package:app_piso/src/utils/widget/button.dart';
 import 'package:app_piso/src/utils/widget/titulos.dart';
+import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -58,24 +60,17 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         //return Scaffold();
         return Scaffold(
             key: scaffoldKey,
-            appBar: AppBar(),
+            appBar: AppBar(title: Text('Paso $countPlanta Caminata ${paso.caminata}'),),
             body: SingleChildScrollView(
                 child: Container(
-                    padding: EdgeInsets.all(15.0),
                     child: Form(
                         key: formKey,
                         child: Column(
                             children: <Widget>[
-                                TitulosPages(titulo: 'Paso $countPlanta Caminata ${paso.caminata}'),
-                                Divider(),
-                                Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text('Punta de zapato en contacto con :', style: Theme.of(context).textTheme.headline6!
-                                                .copyWith(fontSize: 16, fontWeight: FontWeight.w600))
-                                ),
-                                Divider(),
-                                _plagasList(),
-                                Divider(),
+                                TitulosPages(titulo: 'Punta de zapato en contacto con :'),
+                                SizedBox(height: 20,),
+                                _malezaList(),
+                                
                                 
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 30.0),
@@ -91,49 +86,64 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
     }
 
 
-    Widget _plagasList(){
+    Widget _malezaList(){
+        List<Widget> listaContacto = [];
 
-        return ListView.builder(
-            
-            itemBuilder: (BuildContext context, int index) {
-                
-                String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "1","label": "No data"})['label'];
-                int idPlaga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$index', orElse: () => {"value": "100","label": "No data"})['value']);
-                
-                return CheckboxListTile(
-                    title: Text(labelPlaga, style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                    value: (radios[itemEnContato[idPlaga]['value']] == '1') ? true : false,
+        listaContacto.add(
+            _tituloLista('Malezas dañinas'),
+        );
+
+        for (var item in itemEnContato) {
+            String labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '${item['value']}', orElse: () => {"value": "1","label": "No data"})['label'];
+            int idContacto = int.parse(itemEnContato.firstWhere((e) => e['value'] == '${item['value']}', orElse: () => {"value": "100","label": "No data"})['value']);
+
+            if (item['value'] == '7') {
+                listaContacto.add(
+                    _tituloLista('Malezas de coberturas nobles'),
+                );
+            } else if(item['value'] == '9'){
+                listaContacto.add(
+                    _tituloLista('Mulch de maleza'),
+                );
+            }
+
+            listaContacto.add(
+                CheckboxListTile(
+                    title: textoCardBody(labelPlaga),
+                    contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                    value: (radios[itemEnContato[idContacto]['value']] == '1') ? true : false,
                     onChanged: (value){
                         setState(() {
                             radioGroupKeys();
-                            radios[itemEnContato[idPlaga]['value']] = value! ? '1' : '2';
+                            radios[itemEnContato[idContacto]['value']] = value! ? '1' : '2';
                             
                         });
                     }
+                )
+            );
+        }
 
-                );
+        return Column(children: listaContacto,);
         
-            },
-            shrinkWrap: true,
-            itemCount: itemEnContato.length,
-            physics: NeverScrollableScrollPhysics(),
+    }
+
+    Widget _tituloLista(String? texto){
+        return Column(
+            children: [
+                Divider(),
+                tituloCard(texto!),
+                Divider()
+            ],
         );
-        
     }
 
 
 
     Widget  _botonsubmit(){
-        return RaisedButton.icon(
-            icon:Icon(Icons.save, color: Colors.white,),
-            
-            label: Text('Guardar',
-                style: Theme.of(context).textTheme
-                    .headline6!
-                    .copyWith(fontWeight: FontWeight.w600, color: Colors.white)
-            ),
-            padding:EdgeInsets.symmetric(vertical: 13, horizontal: 50),
-            onPressed:(_guardando) ? null : _submit,
+        return ButtonMainStyle(
+            title: 'Guardar',
+            icon: Icons.save,
+            press:(_guardando) ? null : _submit,
         );
     }
 
@@ -145,7 +155,6 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             itemPiso.id = uuid.v1();
             itemPiso.idPaso = paso.id;
             itemPiso.idContacto = int.parse(key);
-            
             itemPiso.existe = int.parse(value);
             listaPlagas.add(itemPiso);
         });
@@ -161,7 +170,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             } 
         });
         if  ( variableVacias ==  radios.length){
-            mostrarSnackbar(variableVacias);
+            mostrarSnackbar('Selección vacía, favor seleccione un item.', context);
             return null;
         }
         
@@ -179,7 +188,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
             });
 
         }
-         
+        mostrarSnackbar('Registro paso guardado', context);
         setState(() {_guardando = false;});
 
         Navigator.pop(context, 'pasos');
@@ -187,16 +196,7 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
         
     }
 
-    void mostrarSnackbar(int variableVacias){
-        final snackbar = SnackBar(
-            content: Text('Campo Vacio, Favor seleccione un item',
-                style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
-            ),
-            duration: Duration(seconds: 2),
-        );
-        setState(() {_guardando = false;});
-        scaffoldKey.currentState!.showSnackBar(snackbar);
-    }
+    
 
    
 
