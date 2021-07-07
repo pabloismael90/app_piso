@@ -412,12 +412,12 @@ class DBProvider {
 
     }
 
-    Future<double> countCompetencia( String? idTest, int idContacto) async {
+    Future<double> malezaDanina( String? idTest, int idContacto) async {
         final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
                         "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
-                        "WHERE idTest = '$idTest' AND idContacto IN (0,1,2,3,4,5) AND existe = 1";
+                        "WHERE idTest = '$idTest' AND idContacto IN (0,1,2,3,4,5,6) AND existe = 1";
         int? res = Sqflite.firstIntValue(await db!.rawQuery(query));
 
         //print(res);
@@ -426,15 +426,25 @@ class DBProvider {
 
     }
 
-    Future<double> countNoCompetencia( String? idTest, int idContacto) async {
+    Future<double> malezaNoble( String? idTest, int idContacto) async {
         final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
                         "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
-                        "WHERE idTest = '$idTest' AND idContacto IN (6,7,8,9) AND existe = 1";
+                        "WHERE idTest = '$idTest' AND idContacto IN (7,8) AND existe = 1";
         int? res = Sqflite.firstIntValue(await db!.rawQuery(query));
+        double value = res!/60;
+        return value;
 
-        //print(res);
+    }
+
+    Future<double> mulchMaleza( String? idTest, int idContacto) async {
+        final db = await (database);
+        String query =  "SELECT COUNT(*) FROM TestPiso "+
+                        "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
+                        "INNER JOIN EnContacto ON  Paso.id = EnContacto.idPaso " +
+                        "WHERE idTest = '$idTest' AND idContacto IN (9,10,11) AND existe = 1";
+        int? res = Sqflite.firstIntValue(await db!.rawQuery(query));
         double value = res!/60;
         return value;
 

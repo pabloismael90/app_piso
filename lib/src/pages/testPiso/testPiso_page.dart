@@ -1,12 +1,10 @@
 import 'package:app_piso/src/bloc/fincas_bloc.dart';
 import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
-import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/button.dart';
 import 'package:app_piso/src/utils/widget/dialogDelete.dart';
 import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 
 final fincasBloc = new FincasBloc();

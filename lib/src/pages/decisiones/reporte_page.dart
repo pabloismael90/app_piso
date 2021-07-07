@@ -55,11 +55,11 @@ class _ReportePageState extends State<ReportePage> {
     }
 
     Future<double> _countTotalCompetencia(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.countCompetencia(idTest, idPlaga);        
+        double countPalga = await DBProvider.db.malezaDanina(idTest, idPlaga);        
         return countPalga*100;
     }
     Future<double> _countTotalNoCompetencia(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.countNoCompetencia(idTest, idPlaga);        
+        double countPalga = await DBProvider.db.malezaNoble(idTest, idPlaga);        
         return countPalga*100;
     }
 
