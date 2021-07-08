@@ -412,7 +412,7 @@ class DBProvider {
 
     }
 
-    Future<double> malezaDanina( String? idTest, int idContacto) async {
+    Future<double> malezaDanina( String? idTest) async {
         final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
@@ -426,7 +426,7 @@ class DBProvider {
 
     }
 
-    Future<double> malezaNoble( String? idTest, int idContacto) async {
+    Future<double> malezaNoble( String? idTest) async {
         final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +
@@ -438,7 +438,7 @@ class DBProvider {
 
     }
 
-    Future<double> mulchMaleza( String? idTest, int idContacto) async {
+    Future<double> mulchMaleza( String? idTest) async {
         final db = await (database);
         String query =  "SELECT COUNT(*) FROM TestPiso "+
                         "INNER JOIN Paso ON TestPiso.id = Paso.idTest " +

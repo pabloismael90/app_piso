@@ -211,7 +211,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
                             child: ButtonMainStyle(
                                     title: 'Consultar decisiones',
                                     icon: Icons.receipt_rounded,
-                                    press: () => Navigator.pushNamed(context, 'reporte', arguments: piso.id),
+                                    press: () => Navigator.pushNamed(context, 'reporte', arguments: piso),
                                 
                             
                             ),

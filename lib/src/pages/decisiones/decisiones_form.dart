@@ -6,6 +6,7 @@ import 'package:app_piso/src/models/selectValue.dart' as selectMap;
 import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/pages/finca/finca_page.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
+import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/button.dart';
 import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,8 @@ class _DesicionesPageState extends State<DesicionesPage> {
     final List<Map<String, dynamic>>  itemObsSuelo = selectMap.observacionSuelo();
     final List<Map<String, dynamic>>  itemObsSombra = selectMap.observacionSombra();
     final List<Map<String, dynamic>>  itemObsManejo = selectMap.observacionManejo();
-    final List<Map<String, dynamic>>  _meses = selectMap.listMeses();
-    final List<Map<String, dynamic>>  listSoluciones = selectMap.solucionesXmes();
+    final List<Map<String, dynamic>>?  _meses = selectMap.listMeses();
+    final List<Map<String, dynamic>>? listSoluciones = selectMap.solucionesXmes();
 
     Widget textFalse = Text('0.00%', textAlign: TextAlign.center);
 
@@ -74,7 +75,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
         for(int i = 0 ; i < itemObsManejo.length ; i ++){
             checksObsManejo[itemObsManejo[i]['value']] = false;
         }
-        for(int i = 0 ; i < listSoluciones.length ; i ++){
+        for(int i = 0 ; i < listSoluciones!.length ; i ++){
             itemActividad[i] = [];
             itemResultado[i] = '';
         }
@@ -92,17 +93,17 @@ class _DesicionesPageState extends State<DesicionesPage> {
         //print(countPalga);        
         return countPalga*100;
     }
-    Future<double> _countMalezaDanina(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.malezaDanina(idTest, idPlaga);        
+    Future<double> _countMalezaDanina(String? idTest) async{
+        double countPalga = await DBProvider.db.malezaDanina(idTest);        
         return countPalga*100;
     }
-    Future<double> _countMalezaNoble(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.malezaNoble(idTest, idPlaga);        
+    Future<double> _countMalezaNoble(String? idTest) async{
+        double countPalga = await DBProvider.db.malezaNoble(idTest);        
         return countPalga*100;
     }
 
-    Future<double> _countMulchMaleza(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.mulchMaleza(idTest, idPlaga);        
+    Future<double> _countMulchMaleza(String? idTest) async{
+        double countPalga = await DBProvider.db.mulchMaleza(idTest);        
         return countPalga*100;
     }
 
@@ -140,13 +141,13 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     Finca finca = snapshot.data[0];
                     Parcela parcela = snapshot.data[1];
                     
-                    //pageItem.add(_principalData(finca, parcela, plagaTest!.id));
-                    //pageItem.add(_hierbasProblematicas());   
-                    //pageItem.add(_competeciaValoracion());  
-                    //pageItem.add(_observaciones());   
-                    //pageItem.add(_obsManejo());   
-                    pageItem.add(_accionesMeses());   
-                    pageItem.add(_botonsubmit(plagaTest!.id));   
+                    pageItem.add(_principalData(finca, parcela, plagaTest!.id));
+                    pageItem.add(_hierbasProblematicas());   
+                    pageItem.add(_competeciaValoracion());  
+                    pageItem.add(_observaciones());   
+                    pageItem.add(_obsManejo());   
+                    pageItem.add(_accionesMeses());
+                    pageItem.add(_botonsubmit(plagaTest.id));   
 
                     return Column(
                         children: [
@@ -179,53 +180,49 @@ class _DesicionesPageState extends State<DesicionesPage> {
     }
 
     Widget _principalData(Finca finca, Parcela parcela, String? plagaid){
-    
-                return Column(
-                    children: [
-                        _dataFincas( context, finca, parcela),
-                        Divider(),
-                        Expanded(
-                            child: SingleChildScrollView(
-                                child: Column(
-                                    children: [
-                                        Container(
-                                            padding: EdgeInsets.symmetric(vertical: 10),
-                                            child: InkWell(
-                                                child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                        Container(                                                                    
-                                                            child: Text(
-                                                                "Porcentaje de cobertura",
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
-                                                            ),
-                                                        ),
-                                                        Padding(
-                                                            padding: EdgeInsets.only(left: 10),
-                                                            child: Icon(
-                                                                Icons.info_outline_rounded,
-                                                                color: Colors.green,
-                                                                size: 20,
-                                                            ),
-                                                        ),
-                                                    ],
+        return Column(
+            children: [
+                _dataFincas( context, finca, parcela),
+                Divider(),
+                Expanded(
+                    child: SingleChildScrollView(
+                        child: Column(
+                            children: [
+                                Container(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: InkWell(
+                                        child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                                Container(                                                                    
+                                                    child: Text(
+                                                        "Porcentaje de cobertura",
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
+                                                    ),
                                                 ),
-                                                onTap: () => _dialogText(context),
-                                            ),
+                                                Padding(
+                                                    padding: EdgeInsets.only(left: 10),
+                                                    child: Icon(
+                                                        Icons.info_outline_rounded,
+                                                        color: Colors.green,
+                                                        size: 20,
+                                                    ),
+                                                ),
+                                            ],
                                         ),
-                                        Divider(),
-                                        _tablaCobertura(plagaid, 1),
-                                    ],
+                                        onTap: () => _dialogText(context),
+                                    ),
                                 ),
-                            ),
-                        )
-                        
-                    ],
-                );
+                                Divider(),
+                                _tablaCobertura(plagaid, 1),
+                            ],
+                        ),
+                    ),
+                )
                 
-
-            
+            ],
+        );
     }
 
     Widget _dataFincas( BuildContext context, Finca finca, Parcela parcela ){
@@ -273,7 +270,6 @@ class _DesicionesPageState extends State<DesicionesPage> {
         );
     }
 
-    
     Widget _rowTabla(String? titulo, String? idTest, int? idplga, int? indice){
         return Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -350,7 +346,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                 Container(
                     width: 70,
                     child: FutureBuilder(
-                        future: _countMalezaDanina(idTest, idplga),
+                        future: _countMalezaDanina(idTest),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData) {
                                 return textFalse;
@@ -373,7 +369,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                 Container(
                     width: 70,
                     child: FutureBuilder(
-                        future: _countMalezaNoble(idTest, idplga),
+                        future: _countMalezaNoble(idTest),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData) {
                                 return textFalse;
@@ -395,7 +391,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                 Container(
                     width: 70,
                     child: FutureBuilder(
-                        future: _countMulchMaleza(idTest, idplga),
+                        future: _countMulchMaleza(idTest),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData) {
                                 return textFalse;
@@ -698,24 +694,26 @@ class _DesicionesPageState extends State<DesicionesPage> {
             )
             
         );
-        for (var i = 0; i < listSoluciones.length; i++) {
-            String? labelSoluciones = listSoluciones.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
+        for (var i = 0; i < listSoluciones!.length; i++) {
+            String? labelSoluciones = listSoluciones!.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
             
             
             listaAcciones.add(
                 Container(
                     padding: EdgeInsets.all(16),
                     child: MultiSelectFormField(
-                        autovalidate: false,
-                        chipBackGroundColor: Colors.deepPurple,
-                        chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                        chipBackGroundColor: kmorado,
+                        chipLabelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                         dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
                         checkBoxActiveColor: Colors.deepPurple,
                         checkBoxCheckColor: Colors.white,
                         dialogShapeBorder: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(12.0))
                         ),
-                        title: textoCardBody("$labelSoluciones"),
+                        title: Text(
+                            "$labelSoluciones",
+                            style: TextStyle(fontSize: 16),
+                        ),
                         validator: (value) {
                             if (value == null || value.length == 0) {
                             return 'Seleccione una o mas opciones';

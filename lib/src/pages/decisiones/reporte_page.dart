@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:app_piso/src/models/acciones_model.dart';
 import 'package:app_piso/src/models/decisiones_model.dart';
 import 'package:app_piso/src/models/testPiso_model.dart';
+import 'package:app_piso/src/pages/pdf/pdf_api.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
 import 'package:app_piso/src/utils/constants.dart';
-import 'package:app_piso/src/utils/widget/titulos.dart';
+import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 
@@ -54,12 +55,18 @@ class _ReportePageState extends State<ReportePage> {
         return countPalga*100;
     }
 
-    Future<double> _countTotalCompetencia(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.malezaDanina(idTest, idPlaga);        
+    Future<double> _countMalezaDanina(String? idTest) async{
+        double countPalga = await DBProvider.db.malezaDanina(idTest);        
         return countPalga*100;
     }
-    Future<double> _countTotalNoCompetencia(String? idTest,int idPlaga) async{
-        double countPalga = await DBProvider.db.malezaNoble(idTest, idPlaga);        
+    
+    Future<double> _countMalezaNoble(String? idTest) async{
+        double countPalga = await DBProvider.db.malezaNoble(idTest);        
+        return countPalga*100;
+    }
+
+    Future<double> _countMulchMaleza(String? idTest) async{
+        double countPalga = await DBProvider.db.mulchMaleza(idTest);        
         return countPalga*100;
     }
 
@@ -68,12 +75,28 @@ class _ReportePageState extends State<ReportePage> {
 
     @override
     Widget build(BuildContext context) {
-        String? idTest = ModalRoute.of(context)!.settings.arguments as String?;
+        TestPiso? testPiso = ModalRoute.of(context)!.settings.arguments as TestPiso;
 
         return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+                title: Text('Reporte de Decisiones'),
+                actions: [
+                    TextButton(
+                        
+                        onPressed: () => _crearPdf(testPiso),
+                        child: Row(
+                            children: [
+                                Icon(Icons.download, color: kwhite, size: 16,),
+                                SizedBox(width: 5,),
+                                Text('PDF', style: TextStyle(color: Colors.white),)
+                            ],
+                        )
+                        
+                    )
+                ],
+            ),
             body: FutureBuilder(
-                future: getdata(idTest),
+                future: getdata(testPiso.id),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
                         return CircularProgressIndicator();
@@ -82,66 +105,76 @@ class _ReportePageState extends State<ReportePage> {
                     Finca finca = snapshot.data[2];
                     Parcela parcela = snapshot.data[3];
 
-                    pageItem.add(_principalData(idTest,context, finca, parcela));
-                    
-                    pageItem.add( _hierbasProblematicas(snapshot.data[0]));
-                    _plagasPDF(idTest,1);
-                    pageItem.add( _competeciaValoracion(snapshot.data[0]));
-                    pageItem.add( _observaciones(snapshot.data[0]));
-                    pageItem.add( _obsManejo(snapshot.data[0]));
+                    pageItem.add(_principalData(testPiso.id,context, finca, parcela));
+                    pageItem.add(
+                        SingleChildScrollView(
+                            child: Column(
+                                children:_generatePregunta(snapshot.data[0],'Hierbas que consideran problematicas', 1, hierbaProblematica ),
+                            )
+                        ) 
+                    );
+
+                    pageItem.add(
+                        SingleChildScrollView(
+                            child: Column(
+                                children:[
+                                    Column(
+                                        children:_generatePregunta(snapshot.data[0],'Competencia entre hierbas y cacao', 2, itemCompetencia ),
+                                    ),
+                                    Column(
+                                        children:_generatePregunta(snapshot.data[0],'Valoración de cobertura del piso', 3, itemValoracion ),
+                                    )
+                                ]
+                            )
+                        ) 
+                    );
+                    pageItem.add(
+                        SingleChildScrollView(
+                            child: Column(
+                                children:[
+                                    Column(
+                                        children:_generatePregunta(snapshot.data[0],'Observaciones de suelo', 4, itemObsSuelo ),
+                                    ),
+                                    Column(
+                                        children:_generatePregunta(snapshot.data[0],'Observaciones de sombra', 5, itemObsSombra ),
+                                    )
+                                ]
+                            )
+                        ) 
+                    );
+                    pageItem.add(
+                        SingleChildScrollView(
+                            child: Column(
+                                children:_generatePregunta(snapshot.data[0],'Observaciones de manejo', 6, itemObsManejo ),
+                            )
+                        )
+                    );
                     pageItem.add( _accionesMeses(snapshot.data[1]));
                     
                     
                     return Column(
                         children: [
-                            Container(
-                                child: Column(
-                                    children: [
-                                        
-                                        TitulosPages(titulo: 'Reporte de Decisiones'),
-                                        Divider(),
-                                        Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 10),
-                                            child: Text(
-                                                "Deslice hacia la derecha para continuar con el reporte",
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context).textTheme
-                                                    .headline5!
-                                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 16)
-                                            ),
-                                        ),
-                                    ],
-                                )
-                            ),
+                            mensajeSwipe('Deslice hacia la izquierda para continuar con el reporte'),
                             Expanded(
                                 
-                                child: Swiper(
-                                    itemBuilder: (BuildContext context, int index) {
-                                        return pageItem[index];
-                                    },
-                                    itemCount: pageItem.length,
-                                    viewportFraction: 1,
-                                    loop: false,
-                                    scale: 1,
+                                child: Container(
+                                    color: Colors.white,
+                                    padding: EdgeInsets.all(15),
+                                    child: Swiper(
+                                        itemBuilder: (BuildContext context, int index) {
+                                            return pageItem[index];
+                                        },
+                                        itemCount: pageItem.length,
+                                        viewportFraction: 1,
+                                        loop: false,
+                                        scale: 1,
+                                    ),
                                 ),
                             ),
                         ],
                     );
                 },
             ),
-            // floatingActionButton: FloatingActionButton(
-            //     child: Icon(Icons.save_alt),     
-            //     onPressed: ()async{
-            //         writePDF();
-            //         await savePDF();
-            //         Directory documentsDirectory = await getExternalStorageDirectory();
-            //         String documentPath = documentsDirectory.path;
-            //         String fullPath = "$documentPath/example.pdf";
-            //         Navigator.push(context, MaterialPageRoute(
-            //             builder: (context) => PDFView(fullPath)
-            //         ));
-            //     },
-            // ),
         );
     }
 
@@ -155,68 +188,44 @@ class _ReportePageState extends State<ReportePage> {
             child: Column(
                 children: [
                     _dataFincas( context, finca, parcela),
-
+                    Divider(),
                     Expanded(
                         child: SingleChildScrollView(
-                            child: Container(
-                                color: Colors.white,
-                                child: Column(
-                                    children: [
-                                        Container(
-                                            child: Padding(
-                                                padding: EdgeInsets.only(top: 20, bottom: 10),
-                                                child: Text(
-                                                    "Porcentaje de cobertura",
-                                                    textAlign: TextAlign.center,
-                                                    style: Theme.of(context).textTheme
-                                                        .headline5!
-                                                        .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                                                ),
-                                            )
-                                        ),
-                                        Divider(),
-                                        Container(
-                                            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                            width: double.infinity,
-                                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                    BoxShadow(
-                                                            color: Color(0xFF3A5160)
-                                                                .withOpacity(0.05),
-                                                            offset: const Offset(1.1, 1.1),
-                                                            blurRadius: 17.0),
-                                                    ],
-                                            ),
-                                            child: Column(
+                            child: Column(
+                                children: [
+                                    Container(
+                                        padding: EdgeInsets.symmetric(vertical: 3),
+                                        child: InkWell(
+                                            child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                    Row(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                            Expanded(
-                                                                child: Container(
-                                                                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                                                    child: Text('Estado de piso', textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6!
-                                                                                            .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                                                                ),
-                                                            ),
-                                                            
-                                                            Container(
-                                                                width: 100,
-                                                                child: Text('Cobertura', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6!
-                                                                        .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
-                                                            ),
-                                                        ],
+                                                    Container(                                                                    
+                                                        child: Text(
+                                                            "Datos consolidados",
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
+                                                        ),
                                                     ),
-                                                    Divider(),
-                                                    _countPlagas(plagaid, 1),
+                                                    Container(
+                                                        padding: EdgeInsets.only(left: 10),
+                                                        child: Icon(
+                                                            Icons.info_outline_rounded,
+                                                            color: Colors.green,
+                                                            size: 20,
+                                                        ),
+                                                    ),
                                                 ],
                                             ),
+                                            onTap: () => _dialogText(context),
                                         ),
-                                    ],
-                                ),
+                                    ),
+                                    Divider(),
+                                    Column(
+                                        children: [
+                                            _tablaCobertura(plagaid, 1),
+                                        ],
+                                    ),
+                                ],
                             ),
                         ),
                     )
@@ -226,141 +235,80 @@ class _ReportePageState extends State<ReportePage> {
 
             
     }
+    
     Widget _dataFincas( BuildContext context, Finca finca, Parcela parcela ){
         String? labelMedidaFinca;
         String? labelvariedad;
 
-        final item = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}');
-        labelMedidaFinca  = item['label'];
+        labelMedidaFinca = selectMap.dimenciones().firstWhere((e) => e['value'] == '${finca.tipoMedida}')['label'];
+        labelvariedad = selectMap.variedadCacao().firstWhere((e) => e['value'] == '${parcela.variedadCacao}')['label'];
 
-        final itemvariedad = selectMap.variedadCacao().firstWhere((e) => e['value'] == '${parcela.variedadCacao}');
-        labelvariedad  = itemvariedad['label'];
-
-        return Container(
-                    
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                    BoxShadow(
-                            color: Color(0xFF3A5160)
-                                .withOpacity(0.05),
-                            offset: const Offset(1.1, 1.1),
-                            blurRadius: 17.0),
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+                encabezadoCard('${finca.nombreFinca}','Parcela: ${parcela.nombreLote}', ''),
+                textoCardBody('Productor: ${finca.nombreProductor}'),
+                tecnico('${finca.nombreTecnico}'),
+                textoCardBody('Variedad: $labelvariedad'),
+                Wrap(
+                    spacing: 20,
+                    children: [
+                        textoCardBody('Área Finca: ${finca.areaFinca} ($labelMedidaFinca)'),
+                        textoCardBody('Área Parcela: ${parcela.areaLote} ($labelMedidaFinca)'),
+                        textoCardBody('N de plantas: ${parcela.numeroPlanta}'),
                     ],
-            ),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                    
-                    Flexible(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                            
-                                Padding(
-                                    padding: EdgeInsets.only(top: 10, bottom: 10.0),
-                                    child: Text(
-                                        "${finca.nombreFinca}",
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: Theme.of(context).textTheme.headline6,
-                                    ),
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only( bottom: 10.0),
-                                    child: Text(
-                                        "${parcela.nombreLote}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                    ),
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only( bottom: 10.0),
-                                    child: Text(
-                                        "Productor ${finca.nombreProductor}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                    ),
-                                ),
-
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                        Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                                Padding(
-                                                    padding: EdgeInsets.only( bottom: 10.0),
-                                                    child: Text(
-                                                        "Área Finca: ${finca.areaFinca} ($labelMedidaFinca)",
-                                                        style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                    ),
-                                                ),
-                                                Padding(
-                                                    padding: EdgeInsets.only( bottom: 10.0),
-                                                    child: Text(
-                                                        "N de plantas: ${parcela.numeroPlanta}",
-                                                        style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                    ),
-                                                ),
-                                            ],
-                                        ),
-                                        Flexible(
-                                            child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                    Padding(
-                                                        padding: EdgeInsets.only( bottom: 10.0, left: 20),
-                                                        child: Text(
-                                                            "Área Parcela: ${parcela.areaLote} ($labelMedidaFinca)",
-                                                            style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                        ),
-                                                    ),
-                                                    Padding(
-                                                        padding: EdgeInsets.only( bottom: 10.0, left: 20),
-                                                        child: Text(
-                                                            "Variedad: $labelvariedad",
-                                                            style: TextStyle(color: kTextColor, fontSize: 14, fontWeight: FontWeight.bold),
-                                                        ),
-                                                    ),
-                                                ],
-                                            ),
-                                        )
-                                    ],
-                                )
-
-                                
-                            ],  
-                        ),
-                    ),
-                ],
-            ),
+                ),
+            ],  
         );
 
     }
-
-    Widget _titulosTabla(String titulo){
+    
+    Widget _encabezadoTabla(String? titulo){
         return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(titulo, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6!
-                          .copyWith(fontSize: 16, fontWeight: FontWeight.w600)),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                        Expanded(child: tituloCard(titulo!)),
+                        Container(
+                            width: 80,
+                            child: textoCardBody('Cobertura'),
+                        ),
+                    ],
                 ),
                 Divider()
             ],
         );
     }
 
+    Widget _rowTabla(String? titulo, String? idTest, int? idplga, int? indice){
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+                Expanded(child: textoCardBody(titulo!)),
+                Container(
+                    width: 70,
+                    child: FutureBuilder(
+                        future: _countPercentTotal(idTest, idplga!),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                                return textFalse;
+                            }
 
-    Widget _countPlagas(String? idTest, int caminata){
+                            return textoCardBody('${snapshot.data.toStringAsFixed(2)}%');
+                            //return Text('${snapshot.data.toStringAsFixed(2)}%', 
+                            //textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: (indice! <= 6) ? Colors.red : Colors.green[900]));
+                        },
+                    ),
+                ),
+            ],
+        );
+    }
+    
+    Widget _tablaCobertura(String? idTest, int caminata){
         List<Widget> lisItem = [];
+
+        lisItem.add(_encabezadoTabla('Maleza potencialmente dañinos'));
 
         for (var i = 0; i < itemEnContato.length; i++) {
             String? labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
@@ -368,193 +316,121 @@ class _ReportePageState extends State<ReportePage> {
             
             
 
-            if (idplga == 5) {
-                   lisItem.add(_countCompetencia(idTest,idplga, labelPlaga));
-            }else if(idplga == 9){
-                lisItem.add(_countNoCompetencia(idTest,idplga, labelPlaga));
-            }else if(idplga == 10){
-                lisItem.add(_sueloDesnudo(idTest,idplga, labelPlaga));
+            if (idplga == 6) {
+                lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
+                lisItem.add(Divider());
+                lisItem.add(_malezaDanina(idTest,idplga, labelPlaga));
+                lisItem.add(SizedBox(height: 10,));
+                lisItem.add(Divider());
+                lisItem.add(_encabezadoTabla('Malezas de cobertura nobles'));
+            }else if(idplga == 8){
+                lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
+                lisItem.add(Divider());
+                lisItem.add(_malezaNoble(idTest,idplga, labelPlaga));
+                lisItem.add(SizedBox(height: 10,));
+                lisItem.add(Divider());
+                lisItem.add(_encabezadoTabla('Mulch de maleza'));
+            }else if(idplga == 11){
+                lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
+                lisItem.add(Divider());
+                lisItem.add(_mulchMaleza(idTest,idplga, labelPlaga));
             }else{
-                if (idplga == 0) {
-                    lisItem.add(_titulosTabla('Maleza potencialmente dañinos'));
-                }
-                if (idplga == 6) {
-                    lisItem.add(_titulosTabla('Malezas de cobertura nobles'));
-                }
-                if (idplga == 8) {
-                    lisItem.add(_titulosTabla('Mulch de maleza'));
-                }
+                
+               
 
 
-                lisItem.add(
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                            Expanded(
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Text('$labelPlaga', 
-                                    textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: (i <= 5) ? Colors.red : Colors.green[900]) ,),
-                                ),
-                            ),
-                            Container(
-                                width: 50,
-                                
-                                child: FutureBuilder(
-                                    future: _countPercentTotal(idTest, idplga),
-                                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (!snapshot.hasData) {
-                                            return textFalse;
-                                        }
+                lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
 
-                                        return Text('${snapshot.data.toStringAsFixed(2)}%', 
-                                        textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: (i <= 5) ? Colors.red : Colors.green[900]));
-                                    },
-                                ),
-                            ),
-                            Container(width: 50,),
-                            
-                        ],
-                    )
-                );
+                    
             }
                         
-            lisItem.add(Divider());
         }
         return Column(children:lisItem,);
     }
     
 
-    Widget _countCompetencia(String? idTest, int idplga, String? labelPlaga){
+    Widget _malezaDanina(String? idTest, int idplga, String? labelPlaga){
         return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red) ,),
-                    ),
-                ),
+                Expanded(child: subtituloCardBody('Total')),
                 Container(
-                    width: 50,
+                    width: 70,
                     child: FutureBuilder(
-                        future: _countPercentTotal(idTest, idplga),
+                        future: _countMalezaDanina(idTest),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData) {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red));
+                            return subtituloCardBody('${snapshot.data.toStringAsFixed(2)}%');
                         },
                     ),
+                    
                 ),
-                Container(
-                    width: 50,
-                    child: FutureBuilder(
-                        future: _countTotalCompetencia(idTest, idplga),
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData) {
-                                return textFalse;
-                            }
-
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.red));
-                        },
-                    ),
-                ),
-                
             ],
         );
     }
 
-    Widget _countNoCompetencia(String? idTest, int idplga, String? labelPlaga){
+    Widget _malezaNoble(String? idTest, int idplga, String? labelPlaga){
         return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]) ,),
-                    ),
-                ),
+                Expanded(child: subtituloCardBody('Total')),
                 Container(
-                    width: 50,
+                    width: 70,
                     child: FutureBuilder(
-                        future: _countPercentTotal(idTest, idplga),
+                        future: _countMalezaNoble(idTest),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData) {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]));
+                            return subtituloCardBody('${snapshot.data.toStringAsFixed(2)}%');
                         },
                     ),
                 ),
-                Container(
-                    width: 50,
-                    child: FutureBuilder(
-                        future: _countTotalNoCompetencia(idTest, idplga),
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
-                            if (!snapshot.hasData) {
-                                return textFalse;
-                            }
-
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.green[900]));
-                        },
-                    ),
-                ),
-                
             ],
         );
     }
 
-    Widget _sueloDesnudo(String? idTest, int idplga, String? labelPlaga){
+    Widget _mulchMaleza(String? idTest, int idplga, String? labelPlaga){
         return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.brown) ,),
-                    ),
-                ),
+                Expanded(child: subtituloCardBody('Total')),
                 Container(
-                    width: 50,
+                    width: 70,
                     child: FutureBuilder(
-                        future: _countPercentTotal(idTest, idplga),
+                        future: _countMulchMaleza(idTest),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (!snapshot.hasData) {
                                 return textFalse;
                             }
 
-                            return Text('${snapshot.data.toStringAsFixed(2)}%', textAlign: TextAlign.center, style:TextStyle(fontWeight: FontWeight.bold, color: Colors.brown));
+                            return subtituloCardBody('${snapshot.data.toStringAsFixed(2)}%');
                         },
                     ),
                 ),
-                Container(width: 50,),
-                
             ],
         );
     }
 
 
+    List<Widget> _generatePregunta(List<Decisiones> decisionesList, String? titulo, int idPregunta, List<Map<String, dynamic>>  listaItem){
+        List<Widget> listWidget = [];
+        List<Decisiones> listDecisiones = decisionesList.where((i) => i.idPregunta == idPregunta).toList();
 
-    Widget _hierbasProblematicas(List<Decisiones> decisionesList){
-        List<Widget> listPrincipales = [];
-
-        listPrincipales.add(
+        listWidget.add(
             Column(
                 children: [
                     Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "Hierbas que consideran problematicas",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
+                        padding: EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text(
+                            titulo as String,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
+                        ),
                     ),
                     Divider(),
                 ],
@@ -562,89 +438,18 @@ class _ReportePageState extends State<ReportePage> {
             
         );
         
+        
+        for (var item in listDecisiones) {
+                String? label= listaItem.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
 
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 1) {
-                String? label = hierbaProblematica.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
+                listWidget.add(
 
                     Container(
                         child: CheckboxListTile(
-                        title: Text('$label'),
-                            value: item.repuesta == 1 ? true : false ,
-                            activeColor: Colors.teal[900], 
-                            onChanged: (value) {
-                                
-                            },
-                        ),
-                    )                  
+                        title: Text('$label',
+                            style: TextStyle(fontSize: 14),
                         
-                );
-            }
-            
-            
-            
-        }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
-        );
-        
-    }
-
-    Widget _competeciaValoracion(List<Decisiones> decisionesList){
-        List<Widget> listPrincipales = [];
-
-        listPrincipales.add(
-            Column(
-                children: [
-                    Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "Competencia entre hierbas y cacao",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
-                    ),
-                    Divider(),
-                ],
-            )
-            
-        );
-        
-
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 2) {
-                String? label= itemCompetencia.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
-
-                    Container(
-                        child: CheckboxListTile(
-                        title: Text('$label'),
+                        ),
                             value: item.repuesta == 1 ? true : false ,
                             activeColor: Colors.teal[900], 
                             onChanged: (value) {
@@ -654,262 +459,8 @@ class _ReportePageState extends State<ReportePage> {
                     )                  
                     
                 );
-            }
-            
         }
-
-        listPrincipales.add(
-            Column(
-                children: [
-                    Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "Valoración de cobertura del piso",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
-                    ),
-                    Divider(),
-                ],
-            )
-            
-        );
-        
-
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 3) {
-                String? label= itemValoracion.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
-
-                    Container(
-                        child: CheckboxListTile(
-                        title: Text('$label'),
-                            value: item.repuesta == 1 ? true : false ,
-                            activeColor: Colors.teal[900], 
-                            onChanged: (value) {
-                                
-                            },
-                        ),
-                    )                  
-                    
-                );
-            }
-            
-        }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
-        );
-        
-    }
-
-    Widget _observaciones(List<Decisiones> decisionesList){
-        List<Widget> listPrincipales = [];
-
-        listPrincipales.add(
-            Column(
-                children: [
-                    Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "Observaciones de suelo",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
-                    ),
-                    Divider(),
-                ],
-            )
-            
-        );
-        
-
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 4) {
-                String? label= itemObsSuelo.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
-
-                    Container(
-                        child: CheckboxListTile(
-                        title: Text('$label'),
-                            value: item.repuesta == 1 ? true : false ,
-                            activeColor: Colors.teal[900], 
-                            onChanged: (value) {
-                                
-                            },
-                        ),
-                    )                  
-                    
-                );
-            }
-            
-        }
-
-        listPrincipales.add(
-            Column(
-                children: [
-                    Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "Observaciones de sombra",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
-                    ),
-                    Divider(),
-                ],
-            )
-            
-        );
-        
-
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 5) {
-                String? label= itemObsSombra.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
-
-                    Container(
-                        child: CheckboxListTile(
-                        title: Text('$label'),
-                            value: item.repuesta == 1 ? true : false ,
-                            activeColor: Colors.teal[900], 
-                            onChanged: (value) {
-                                
-                            },
-                        ),
-                    )                  
-                    
-                );
-            }
-            
-        }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
-        );
-        
-    }
-
-    Widget _obsManejo(List<Decisiones> decisionesList){
-        List<Widget> listPrincipales = [];
-
-        listPrincipales.add(
-            Column(
-                children: [
-                    Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "Observaciones de manejo",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
-                    ),
-                    Divider(),
-                ],
-            )
-            
-        );
-        
-
-        for (var item in decisionesList) {
-
-            if (item.idPregunta == 6) {
-                String? label= itemObsManejo.firstWhere((e) => e['value'] == '${item.idItem}', orElse: () => {"value": "1","label": "No data"})['label'];
-
-                listPrincipales.add(
-
-                    Container(
-                        child: CheckboxListTile(
-                        title: Text('$label'),
-                            value: item.repuesta == 1 ? true : false ,
-                            activeColor: Colors.teal[900], 
-                            onChanged: (value) {
-                                
-                            },
-                        ),
-                    )                  
-                    
-                );
-            }
-            
-            
-            
-        }
-        
-        return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
-        );
-        
+        return listWidget;
     }
 
 
@@ -920,16 +471,12 @@ class _ReportePageState extends State<ReportePage> {
             Column(
                 children: [
                     Container(
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 10),
-                            child: Text(
-                                "¿Qué acciones vamos a realizar y cuando?",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w600, fontSize: 18)
-                            ),
-                        )
+                        padding: EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text(
+                            "¿Qué acciones vamos a realizar y cuando?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
+                        ),
                     ),
                     Divider(),
                 ],
@@ -957,9 +504,7 @@ class _ReportePageState extends State<ReportePage> {
 
                     ListTile(
                         title: Text('$label',
-                            style: Theme.of(context).textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.bold, fontSize: 16)
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(meses.join(","+" ")),
                     )                 
@@ -971,68 +516,69 @@ class _ReportePageState extends State<ReportePage> {
             
         }
         return SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                        BoxShadow(
-                                color: Color(0xFF3A5160)
-                                    .withOpacity(0.05),
-                                offset: const Offset(1.1, 1.1),
-                                blurRadius: 17.0),
-                        ],
-                ),
-                child: Column(children:listPrincipales,)
-            ),
+            child: Column(children:listPrincipales,),
         );
     }
 
 
-    Widget _plagasPDF(String? idTest, int caminata){
-        List<Widget> lisItem = [];
+    Future _crearPdf( TestPiso testPiso ) async{
+        
+        Map<int,List>? listaMalezadanina = {};
 
-        for (var i = 0; i < itemEnContato.length; i++) {
-            String? labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
-            int idplga = int.parse(itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "100","label": "No data"})['value']);
-            lisItem.add(
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                        Expanded(child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Text('$labelPlaga', textAlign: TextAlign.left, style:TextStyle(fontWeight: FontWeight.bold) ,),
-                        ),),
-                        
-                        Container(
-                            width: 50,
-                            child: FutureBuilder(
-                                future: _countPercentTotal(idTest, idplga),
-                                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                        return textFalse;
-                                    }
+        for (var item in itemEnContato) {
+            int key = int.parse(item['value']);
+            List<double?> valueItem =[
+                await _countPercentTotal(testPiso.id, key)
+            ];
 
-                                    return Text('${snapshot.data.toStringAsFixed(0)}%', textAlign: TextAlign.center);
-                                },
-                            ),
-                        ),
-                        
-                    ],
-                )
-            );
+            listaMalezadanina.putIfAbsent(key, () => valueItem);
+          
         }
-        return Column(children:lisItem,);
+
+        List<double?> totales =[
+            await _countMalezaDanina(testPiso.id),
+            await _countMalezaNoble(testPiso.id),
+            await _countMulchMaleza(testPiso.id),
+        ];   
+ 
+
+        
+        final pdfFile = await PdfApi.generateCenteredText(testPiso, listaMalezadanina, totales);
+        
+        PdfApi.openFile(pdfFile);
     }
 
 
 
-   
-
-    
 
 
+
+}
+
+
+Future<void> _dialogText(BuildContext context) async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+            return AlertDialog(
+                title: Text('Titulo'),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                        children: <Widget>[
+                        Text('Texto para breve explicacion'),
+                        ],
+                    ),
+                ),
+                actions: <Widget>[
+                    TextButton(
+                        child: Text('Cerrar'),
+                        onPressed: () {
+                        Navigator.of(context).pop();
+                        },
+                    ),
+                ],
+            );
+        },
+    );
 }
