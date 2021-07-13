@@ -127,8 +127,6 @@ class DBProvider {
         await db.execute('PRAGMA foreign_keys = ON');
     }
 
-    
-
     //ingresar Registros
     nuevoFinca( Finca nuevaFinca ) async {
         final db  = await (database);
@@ -311,7 +309,6 @@ class DBProvider {
         List<EnContacto> list = res.isNotEmpty 
                     ? res.map( (c) => EnContacto.fromJson(c) ).toList() 
                     : [];
-        //print(list);
         return list;
     }
 
@@ -353,8 +350,6 @@ class DBProvider {
             "SELECT id AS value, nombreFinca AS label FROM Finca"
         );
         List<Map<String, dynamic>> list = res.isNotEmpty ? res : [];
-
-        //print(list);
 
         return list; 
     }
@@ -420,7 +415,6 @@ class DBProvider {
                         "WHERE idTest = '$idTest' AND idContacto IN (0,1,2,3,4,5,6) AND existe = 1";
         int? res = Sqflite.firstIntValue(await db!.rawQuery(query));
 
-        //print(res);
         double value = res!/60;
         return value;
 

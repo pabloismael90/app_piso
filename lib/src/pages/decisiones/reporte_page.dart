@@ -216,7 +216,7 @@ class _ReportePageState extends State<ReportePage> {
                                                     ),
                                                 ],
                                             ),
-                                            onTap: () => _dialogText(context),
+                                            onTap: () => _explicacion(context),
                                         ),
                                     ),
                                     Divider(),
@@ -548,37 +548,25 @@ class _ReportePageState extends State<ReportePage> {
         PdfApi.openFile(pdfFile);
     }
 
+    Future<void> _explicacion(BuildContext context){
 
-
-
-
-
-}
-
-
-Future<void> _dialogText(BuildContext context) async {
-    return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-            return AlertDialog(
-                title: Text('Titulo'),
-                content: SingleChildScrollView(
-                    child: ListBody(
-                        children: <Widget>[
-                        Text('Texto para breve explicacion'),
-                        ],
-                    ),
-                ),
-                actions: <Widget>[
-                    TextButton(
-                        child: Text('Cerrar'),
-                        onPressed: () {
-                        Navigator.of(context).pop();
-                        },
-                    ),
+        return dialogText(
+            context,
+            Column(
+                children: [
+                    textoCardBody('•	La tabla de composición del piso presenta % cobertura de diferentes tipos de hierbas determinadas por la frecuencia de observación de cada tipo de maleza en relación a número total de pasos realizados en las tres caminatas.'),
+                    textoCardBody('•	En la primera sección se presenta porcentaje de área cubierta con malas hierbas dañinas: Zacate anual, Zacate perenne, Hoja ancha anual, Hoja ancha perenne, Coyolillo y Bejucos en suelo. Se presenta % de cobertura de cada tipo de malas hierbas y la suma de ellas.'),
+                    textoCardBody('•	En la segunda sección se presenta porcentaje de área cubierta con las hierbas de cobertura: Cobertura hoja ancha y Cobertura hoja angosta. Se presenta % de cobertura de cada tipo de malas hierbas y la suma de ellas.'),
+                    textoCardBody('•	En la tercera sección se presenta porcentaje de área cubierta con materia muerta: Hojarasca, Mulch de malezas. También se presenta % de área con suelo desnudo. Se presenta % de cobertura de cada tipo y la suma de ellas.'),
+                    textoCardBody('•	Estos datos sirven para toma de decisión sobre manejo de piso de cacaotal y evaluar el resultado de manejo que se practica en la parcela, siempre con el objetivo de tener un piso cubierto, pero sin competencia'),
                 ],
-            );
-        },
-    );
+            ),
+            'Explicación de la tabla de datos'
+        );
+    }
+
+
+
+
 }
+

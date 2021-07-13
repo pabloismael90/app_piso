@@ -41,7 +41,6 @@ class _PasoPageState extends State<PasoPage> {
                     if (!snapshot.hasData) {
                         return CircularProgressIndicator();
                     }
-                    //print(snapshot.data);
                     final paso = snapshot.data;
 
                     return Column(

@@ -7,7 +7,6 @@ import 'package:app_piso/src/models/testPiso_model.dart';
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/constants.dart';
 import 'package:app_piso/src/utils/widget/button.dart';
-import 'package:app_piso/src/utils/widget/titulos.dart';
 import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -67,7 +66,8 @@ class _CaminatasPageState extends State<CaminatasPage> {
                     body: Column(
                         children: [
                             escabezadoCaminata( context, piso ),
-                            TitulosPages(titulo: 'Lista de caminatas'),
+                            _textoExplicacion('Lista de caminatas'),
+                            
                             Expanded(
                                 child: SingleChildScrollView(
                                     child: _listaDeCaminatas( context, piso, countCaminatas ),
@@ -116,6 +116,52 @@ class _CaminatasPageState extends State<CaminatasPage> {
             },
         );        
     }
+
+    Widget _textoExplicacion(String? titulo){
+        return Container(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: InkWell(
+                child: Column(
+                    children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                                Container(                                                                    
+                                    child: Text(
+                                        titulo!,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)
+                                    ),
+                                ),
+                                Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Icon(
+                                        Icons.info_outline_rounded,
+                                        color: Colors.green,
+                                        size: 20,
+                                    ),
+                                ),
+                            ],
+                        ),
+                        SizedBox(height: 5,),
+                        Row(
+                            children: List.generate(
+                                150~/2, (index) => Expanded(
+                                    child: Container(
+                                        color: index%2==0?Colors.transparent
+                                        :kShadowColor2,
+                                        height: 2,
+                                    ),
+                                )
+                            ),
+                        ),
+                    ],
+                ),
+                onTap: () => _explicacion(context),
+            ),
+        );
+    }
+
 
     Widget  _listaDeCaminatas( BuildContext context, TestPiso piso, List countCaminatas){
         return ListView.builder(
@@ -186,8 +232,6 @@ class _CaminatasPageState extends State<CaminatasPage> {
                     }
                     List<Decisiones> desiciones = snapshot.data;
 
-                    //print(desiciones);
-
                     if (desiciones.length == 0){
 
                         return Container(
@@ -234,4 +278,24 @@ class _CaminatasPageState extends State<CaminatasPage> {
             ),
         );
     }
+
+    Future<void> _explicacion(BuildContext context){
+
+        return dialogText(
+            context,
+            Column(
+                children: [
+                    textoCardBody('•	Realizar primera caminata sobre el espacio entre surcos de Cacao, deteniéndonos cada 5 pasos y fijando en el tipo de hierba que toca la punta del zapato. Completar 20 observaciones durante la primera caminata, grabando los datos en la aplicación.'),
+                    textoCardBody('•	Realizar segunda caminata sobre el espacio entre surcos de Cacao, deteniéndonos cada 5 pasos y fijando en el tipo de hierba que toca la punta del zapato. Completar 20 observaciones durante la segunda caminata, grabando los datos en la aplicación.'),
+                    textoCardBody('•	Realizar tercera caminata sobre el espacio entre surcos de Cacao, deteniéndonos cada 5 pasos y fijando en el tipo de hierba que toca la punta del zapato. Completar 20 observaciones durante la tercera caminata, grabando los datos en la aplicación.'),
+                    textoCardBody('•	Al completar las tres caminatas y registrar los datos, la aplicación genera tabla de composición del piso en termino de % de cobertura de los diferentes tipos de hierbas. '),
+                    textoCardBody('•	Utilizar las observaciones sobre el piso de la parcela SAF cacao para tomar decisiones sobre las acciones a realizar para mejorar el piso de cacaotal, con cobertura, pero sin competencia'),
+                ],
+            ),
+            'Pasos para aplicación de piso'
+        );
+    }
+
+
+
 }
