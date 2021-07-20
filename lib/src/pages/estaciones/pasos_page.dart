@@ -147,7 +147,7 @@ class _PasoPageState extends State<PasoPage> {
                         return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                                textoBottom('Plantas: $value / 10',  kTextColor),
+                                textoBottom('Pasos: $value / 20',  kTextColor),
                                 ButtonMainStyle(
                                     title: 'Lista de sitios',
                                     icon: Icons.chevron_left,
