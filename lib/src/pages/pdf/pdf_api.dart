@@ -252,20 +252,20 @@ class PdfApi {
         List<pw.TableRow> filas = [];
         final List<Map<String, dynamic>>?  itemEnContato = selectMap.itemContacto();
 
-        filas.add(_crearFila('Cobertura','Maleza potencialmente dañinos', font, true));
+        filas.add(_crearFila('Cobertura','Malezas dañinas', font, true));
 
         listaMalezadanina.forEach((key, value) {
             String nameItem = itemEnContato!.firstWhere((e) => e['value'] == '$key', orElse: () => {"value": "1","label": "No data"})['label'];
             if(key == 6) {
                 filas.add(_crearFila(value[0], '$nameItem', font, false));
                 filas.add(_crearFila(totales[0], 'Total', font, true));
-                filas.add(_crearFila('Cobertura','Malezas de cobertura nobles', font, true));  
+                filas.add(_crearFila('Cobertura','Coberturas vivas', font, true));  
             }
 
             else if(key == 8) {
                 filas.add(_crearFila(value[0], '$nameItem', font, false));
                 filas.add(_crearFila(totales[1], 'Total', font, true));
-                filas.add(_crearFila('Cobertura','Mulch de maleza', font, true));  
+                filas.add(_crearFila('Cobertura','Coberturas muertas', font, true));  
             }
 
             else if(key == 11) {

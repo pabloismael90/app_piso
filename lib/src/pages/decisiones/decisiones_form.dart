@@ -296,7 +296,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
     Widget _tablaCobertura(String? idTest, int caminata){
         List<Widget> lisItem = [];
 
-        lisItem.add(_encabezadoTabla('Maleza potencialmente dañinos'));
+        lisItem.add(_encabezadoTabla('Malezas dañinas'));
 
         for (var i = 0; i < itemEnContato.length; i++) {
             String? labelPlaga = itemEnContato.firstWhere((e) => e['value'] == '$i', orElse: () => {"value": "1","label": "No data"})['label'];
@@ -310,26 +310,20 @@ class _DesicionesPageState extends State<DesicionesPage> {
                 lisItem.add(_malezaDanina(idTest,idplga, labelPlaga));
                 lisItem.add(SizedBox(height: 10,));
                 lisItem.add(Divider());
-                lisItem.add(_encabezadoTabla('Malezas de cobertura nobles'));
+                lisItem.add(_encabezadoTabla('Coberturas vivas'));
             }else if(idplga == 8){
                 lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
                 lisItem.add(Divider());
                 lisItem.add(_malezaNoble(idTest,idplga, labelPlaga));
                 lisItem.add(SizedBox(height: 10,));
                 lisItem.add(Divider());
-                lisItem.add(_encabezadoTabla('Mulch de maleza'));
+                lisItem.add(_encabezadoTabla('Coberturas muertas'));
             }else if(idplga == 11){
                 lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
                 lisItem.add(Divider());
                 lisItem.add(_mulchMaleza(idTest,idplga, labelPlaga));
             }else{
-                
-               
-
-
                 lisItem.add( _rowTabla(labelPlaga, idTest, idplga, i));
-
-                    
             }
                         
         }
@@ -826,7 +820,7 @@ class _DesicionesPageState extends State<DesicionesPage> {
                     textoCardBody('•	La tabla de composición del piso presenta % cobertura de diferentes tipos de hierbas determinadas por la frecuencia de observación de cada tipo de maleza en relación a número total de pasos realizados en las tres caminatas.'),
                     textoCardBody('•	En la primera sección se presenta porcentaje de área cubierta con malas hierbas dañinas: Zacate anual, Zacate perenne, Hoja ancha anual, Hoja ancha perenne, Coyolillo y Bejucos en suelo. Se presenta % de cobertura de cada tipo de malas hierbas y la suma de ellas.'),
                     textoCardBody('•	En la segunda sección se presenta porcentaje de área cubierta con las hierbas de cobertura: Cobertura hoja ancha y Cobertura hoja angosta. Se presenta % de cobertura de cada tipo de malas hierbas y la suma de ellas.'),
-                    textoCardBody('•	En la tercera sección se presenta porcentaje de área cubierta con materia muerta: Hojarasca, Mulch de malezas. También se presenta % de área con suelo desnudo. Se presenta % de cobertura de cada tipo y la suma de ellas.'),
+                    textoCardBody('•	En la tercera sección se presenta porcentaje de área cubierta con materia muerta: Hojarasca, Coberturas muertass. También se presenta % de área con suelo desnudo. Se presenta % de cobertura de cada tipo y la suma de ellas.'),
                     textoCardBody('•	Estos datos sirven para toma de decisión sobre manejo de piso de cacaotal y evaluar el resultado de manejo que se practica en la parcela, siempre con el objetivo de tener un piso cubierto, pero sin competencia'),
                 ],
             ),

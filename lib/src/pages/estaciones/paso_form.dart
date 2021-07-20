@@ -99,11 +99,11 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
 
             if (item['value'] == '7') {
                 listaContacto.add(
-                    _tituloLista('Malezas de coberturas nobles'),
+                    _tituloLista('Coberturas vivas'),
                 );
             } else if(item['value'] == '9'){
                 listaContacto.add(
-                    _tituloLista('Mulch de maleza'),
+                    _tituloLista('Coberturas muertas'),
                 );
             }
 
