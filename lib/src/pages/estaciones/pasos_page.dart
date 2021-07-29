@@ -149,7 +149,7 @@ class _PasoPageState extends State<PasoPage> {
                             children: [
                                 textoBottom('Pasos: $value / 20',  kTextColor),
                                 ButtonMainStyle(
-                                    title: 'Lista de sitios',
+                                    title: 'Lista de caminatas',
                                     icon: Icons.chevron_left,
                                     press:() => Navigator.pop(context),
                                 )

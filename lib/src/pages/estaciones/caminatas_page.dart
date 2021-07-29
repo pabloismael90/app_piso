@@ -271,7 +271,7 @@ class _CaminatasPageState extends State<CaminatasPage> {
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Text(
-                    "Complete los sitios",
+                    "Complete las caminatas",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w900, color: kRedColor, fontSize: 18)
                 ),

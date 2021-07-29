@@ -5,7 +5,6 @@ import 'package:app_piso/src/models/paso_model.dart';
 import 'package:app_piso/src/models/selectValue.dart' as selectMap;
 import 'package:app_piso/src/providers/db_provider.dart';
 import 'package:app_piso/src/utils/widget/button.dart';
-import 'package:app_piso/src/utils/widget/titulos.dart';
 import 'package:app_piso/src/utils/widget/varios_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -67,11 +66,9 @@ class _AgregarPlantaState extends State<AgregarPlanta> {
                         key: formKey,
                         child: Column(
                             children: <Widget>[
-                                TitulosPages(titulo: 'Punta de zapato en contacto con :'),
-                                SizedBox(height: 20,),
+                                SizedBox(height: 10,),
+                                tituloCard('Punta de zapato en contacto con :'),
                                 _malezaList(),
-                                
-                                
                                 Padding(
                                     padding: EdgeInsets.symmetric(vertical: 30.0),
                                     child: _botonsubmit()
