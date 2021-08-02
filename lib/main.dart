@@ -1,4 +1,4 @@
-import 'package:app_piso/src/pages/PDFView.dart';
+
 import 'package:app_piso/src/pages/decisiones/decisiones_form.dart';
 import 'package:app_piso/src/pages/decisiones/decisiones_page.dart';
 import 'package:app_piso/src/pages/decisiones/reporte_page.dart';
@@ -12,6 +12,7 @@ import 'package:app_piso/src/pages/finca/finca_form.dart';
 import 'package:app_piso/src/pages/finca/finca_page.dart';
 import 'package:app_piso/src/pages/parcelas/parcela_form.dart';
 import 'package:app_piso/src/pages/parcelas/parcelas_page.dart';
+import 'package:app_piso/src/pages/pdf/PDFView.dart';
 import 'package:app_piso/src/pages/testPiso/testPiso_form.dart';
 import 'package:app_piso/src/pages/testPiso/testPiso_page.dart';
 import 'package:app_piso/src/utils/constants.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
                 const Locale('es', 'ES'),
                 // const Locale('en', 'US'),
             ],
-            title: 'Herramienta Cacao Piso',
+            title: 'Cacao Piso',
             initialRoute:'home',
             routes: {
                 'home' : ( BuildContext context ) => HomePage(),
