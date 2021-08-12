@@ -12,6 +12,7 @@ import 'package:app_piso/src/pages/finca/finca_form.dart';
 import 'package:app_piso/src/pages/finca/finca_page.dart';
 import 'package:app_piso/src/pages/parcelas/parcela_form.dart';
 import 'package:app_piso/src/pages/parcelas/parcelas_page.dart';
+import 'package:app_piso/src/pages/pdf/Manuales.dart';
 import 'package:app_piso/src/pages/pdf/PDFView.dart';
 import 'package:app_piso/src/pages/testPiso/testPiso_form.dart';
 import 'package:app_piso/src/pages/testPiso/testPiso_page.dart';
@@ -74,10 +75,13 @@ class MyApp extends StatelessWidget {
                 'decisiones' : ( BuildContext context ) => DesicionesPage(),
                 'registros' : ( BuildContext context ) => DesicionesList(),
                 'reporte' : ( BuildContext context ) => ReportePage(),
+                //PDFs
+                'Manuales' : ( BuildContext context ) => Manuales(),
+                'PDFview' : ( BuildContext context ) => PDFView(),
+                
                 //Galeria de imagenes
                 'galeria' : ( BuildContext context ) => GaleriaImagenes(),
                 'viewImg' : ( BuildContext context ) => ViewImage(),
-                'PDFview' : ( BuildContext context ) => PDFView(),
                 
                 
 
